@@ -2,12 +2,11 @@
 
 import { Textarea } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
-import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
 import { Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { sequence_verify, sequence_counts, sequence_complement, sequence_value } from "@/lib/oligo";
 import { ResultCard, ResultCardGroup } from "@/components/ResultCard";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
+import { Modal, ModalContent, useDisclosure } from "@nextui-org/modal";
 import ConcSetting from "./concentrations_setting";
 
 
@@ -28,7 +27,7 @@ export default function OligoUI() {
 
     useEffect(() => {
         setValid((seqType != '' && verified) ? true : false);
-        console.log('valid',valid);
+        //console.log('valid',valid);
         if (valid) {
             setBaseCount(sequence_counts(sequence));
             setComplement(sequence_complement(sequence));
@@ -91,7 +90,7 @@ export default function OligoUI() {
                 onValueChange={(value) => {
                     setSequence(value);
                     setVerified(sequence_verify(value, seqType));
-                    console.log(sequence, seqType, verified);
+                    //console.log(sequence, seqType, verified);
                 }}
             />
             <div className="grid grid-cols-2 w-full">

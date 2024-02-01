@@ -2,6 +2,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import NavBar from '@/components/NavBar';
 import Footer from "@/components/Footer";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata = {
   title: "XNA Tools",
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
           </div>
           <Footer/>
         </Providers>
+        <SpeedInsights />
 
       </body>
     </html>

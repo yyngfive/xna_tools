@@ -10,7 +10,7 @@ export default function Footer(){
                 <div className='flex justify-center space-x-4 h-5'>
                     <div ><Link isExternal showAnchorIcon color='foreground' href='https://stassenger.top'>Blog</Link></div>
                     <Divider orientation="vertical" />
-                    <div><Link isExternal showAnchorIcon color='foreground' href='https://github.com'>Source</Link></div>
+                    <div><Link isExternal showAnchorIcon color='foreground' href='https://github.com/yyngfive/xna_tools'>Source</Link></div>
                     <Divider orientation="vertical" />
                     <div><Link isExternal showAnchorIcon color='foreground' >Links</Link></div>
                 </div>

@@ -7,7 +7,7 @@ import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
   title: "XNA Tools",
-  description: "",
+  description: "An integrated platform for nucleic acid-related tools",
 };
 
 export default function RootLayout({ children }) {

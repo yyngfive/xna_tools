@@ -2,12 +2,13 @@
 
 import { Textarea } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
-import { Select, SelectItem } from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/select";
 import { useEffect, useState } from "react";
 import { sequence_verify, sequence_counts, sequence_complement, sequence_value } from "@/lib/oligo";
 import { ResultCard, ResultCardGroup } from "@/components/ResultCard";
 import { Modal, ModalContent, useDisclosure } from "@nextui-org/modal";
 import ConcSetting from "./concentrations_setting";
+import { useImmer } from "use-immer";
 
 
 export default function OligoUI() {
@@ -17,27 +18,28 @@ export default function OligoUI() {
     const [verified, setVerified] = useState(true);
     const [sequence, setSequence] = useState('');
     const [valid, setValid] = useState(false);
-    const [conc, setConc] = useState({ target: 'DNA', oligo: 0, Na: 0, Mg: 0, dNTPs: 0 });
+    const [conc, setConc] = useImmer({ target: 'DNA', oligo: 0.25, na: 50, mg: 0, dntps: 0, idk: false });
 
     const [complement, setComplement] = useState('');
-    const [oligoValue, setOligoValue] = useState({ tm: 0, weight: 0, ext: 0 });
+    const [oligoValue, setOligoValue] = useState({ tm: 0, weight: 0, ext: 0, gc: 0 });
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 
     useEffect(() => {
         setValid((seqType != '' && verified) ? true : false);
-        //console.log('valid',valid);
+        //console.log('from ui', conc);
         if (valid) {
             setBaseCount(sequence_counts(sequence));
             setComplement(sequence_complement(sequence));
+            //console.log(oligoValue)
             setOligoValue(sequence_value(sequence, seqType));
-        }else{
+        } else {
             setBaseCount(0);
             setComplement('');
-            setOligoValue({weight:0,tm:0,ext:0});
+            setOligoValue({ tm: 0, weight: 0, ext: 0, gc: 0 });
         }
-    }, [seqType, sequence, verified, valid]);
+    }, [seqType, sequence, verified, valid, conc]);
 
     return (
         <main className="w-full">
@@ -48,7 +50,7 @@ export default function OligoUI() {
                     label="Type"
                     className="max-w-40"
                     labelPlacement="outside-left"
-                    defaultSelectedKey={[seqType]}
+                    defaultSelectedKeys={[seqType]}
                     selectedKeys={[seqType]}
                     isInvalid={seqType === '' ? true : false}
                     errorMessage={seqType === '' ? 'You must choose one type' : ''}
@@ -71,7 +73,7 @@ export default function OligoUI() {
                     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                         <ModalContent>
                             {(onClose) => (
-                                <ConcSetting onClose={onClose} setConc={setConc} />
+                                <ConcSetting onClose={onClose} setConc={setConc} conc={conc} />
                             )}
                         </ModalContent>
                     </Modal>
@@ -81,6 +83,7 @@ export default function OligoUI() {
 
             <Textarea
                 isRequired
+                maxLength={200}
                 isInvalid={!verified}
                 errorMessage={verified ? '' : 'Please check your sequence'}
                 label="Sequence (5' → 3')"
@@ -95,23 +98,24 @@ export default function OligoUI() {
             />
             <div className="grid grid-cols-2 w-full">
                 <span className="self-center">Bases {baseCount}</span>
-                <Button color="danger" className="place-self-end" onClick={()=>{setSequence('');setVerified(sequence_verify('', seqType));}}>Clear</Button>
+                <Button color="danger" className="place-self-end" onClick={() => { setSequence(''); setVerified(sequence_verify('', seqType)); }}>Clear</Button>
             </div>
             <ResultCardGroup>
-                <ResultCard title="Complement 3' → 5'" result={complement} type='text'/>
-                <ResultCard title="Oligo Parameters" result={
+                <ResultCard title="Complement 3' → 5'" result={complement} type='text' />
+                <ResultCard title="Parameters" result={
                     {
-                        columns:[
-                            {key:'name',label:'NAME'},
-                            {key:'value',label:'VALUE'}
+                        columns: [
+                            { key: 'name', label: 'NAME' },
+                            { key: 'value', label: 'VALUE' }
                         ],
-                        rows:[
-                            {key:'1',name:'Molecular Weight',value:oligoValue.weight + ' g/mole'},
-                            {key:'2',name:'Tm Value',value:oligoValue.tm + ' ℃'},
-                            {key:'3',name:'Extinction Coefficient',value:oligoValue.ext + ' L/(mole·cm)'},
+                        rows: [
+                            { key: '1', name: 'Molecular Weight', value: oligoValue.weight + ' g/mole' },
+                            { key: '2', name: 'GC Content', value: oligoValue.gc + ' %' },
+                            { key: '3', name: 'Tm Value', value: oligoValue.tm + ' ℃' },
+                            { key: '4', name: 'Extinction Coefficient', value: oligoValue.ext + ' L/(mole·cm)' },
                         ]
                     }
-                } type='table'/>
+                } type='table' />
             </ResultCardGroup>
 
 

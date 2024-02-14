@@ -1,31 +1,111 @@
 
 function sequence_clean(sequence) {
-    return (sequence.toUpperCase().replace(/[\t\r\f\n\s]*/g, ''));
+    return (sequence.replace(/[\t\r\f\n\s]*/g, ''));
+}
+
+export function sequence_parse(sequence) {
+
+    const sequence_cleaned = sequence_clean(sequence);
+    const regex = /<[A-Za-z35]+>|[ACGTUIactgui]+/g;
+    const matches = sequence_cleaned.match(regex);
+    const result = [];
+
+    if (sequence_cleaned === '') {
+        return result;
+    }
+
+    if (!matches) {
+        return false;
+    }
+
+    const matched = matches.join('');
+
+    if (matched.length != sequence_cleaned.length) {
+        return false;
+    }
+
+    for (let i = 0; i < matches.length; i++) {
+        if (matches[i].startsWith("<")) {
+            const temp = matches[i].substring(1, matches[i].length - 1);
+            console.log('modi', modification_verify(temp));
+
+            if (!modification_verify(temp)) {
+                console.log(modification_verify(temp));
+                return false;
+            }
+            //TODO：考虑Nam等非天然碱基的情况
+            result.push({
+                base: temp[temp.length - 1],
+                modi: temp.slice(0, temp.length - 1),
+            });
+            console.log('res', result);
+        } else {
+            for (let j = 0; j < matches[i].length; j++) {
+                result.push({
+                    base: matches[i][j].toUpperCase(),
+                    modi: '',
+                });
+            }
+        }
+
+    }
+    return result;
+
+}
+
+function modification_verify(modi_base) {
+    const valid_modi = [
+        'tA',
+        'tC',
+        'tG',
+        'tT',
+        'tU',
+        'rA',
+        'rC',
+        'rT',
+        'rG',
+        'rU',
+        'rI',
+    ];
+    if (valid_modi.includes(modi_base)) {
+        return true;
+    } else {
+        return false;
+    }
+
+}
+
+function sequence_get(parsed) {
+    let seq = '';
+    console.log(parsed);
+    parsed.forEach(item => {
+        seq += item.base;
+    });
+    return seq;
 }
 
 export function sequence_verify(sequence, type) {
-    //校验字符种类
-    //TODO:校验修饰语法
-    //TODO： 将RNA表示为rA，rT的修饰形式
-    const dna_bases = /^[ATCG]*$/;
-    const rna_bases = /^[AUCG]*$/;
+
+    // const dna_bases = /^[ATCG]*$/;
+    // const rna_bases = /^[AUCG]*$/;
     let sequence_cleaned = sequence_clean(sequence);
     if (sequence_cleaned.length > 200) {
         return (false);
     }
-    if (type === 'DNA') {
-        return (sequence_cleaned.match(dna_bases) ? true : false);
-    } else if (type === 'RNA') {
-        return (sequence_cleaned.match(rna_bases) ? true : false);
-    } else {
-        return (false);
-    }
+    // if (type === 'DNA') {
+    //     return (sequence_cleaned.match(dna_bases) ? true : false);
+    // } else if (type === 'RNA') {
+    //     return (sequence_cleaned.match(rna_bases) ? true : false);
+    // } else {
+    //     return (false);
+    // }
+    return (sequence_parse(sequence) ? true : false);
 
 }
 
-export function sequence_counts(sequence) {
-    let sequence_cleaned = sequence_clean(sequence);
-    return (sequence_cleaned.length);
+export function sequence_length(sequence_parsed) {
+    let seq = sequence_get(sequence_parsed);
+    return (seq.length);
 
 }
 
@@ -43,15 +123,17 @@ function tm_value(sequence_cleaned, conc, type) {
     return (tm.toFixed(1));
 }
 
-export function sequence_complement(sequence) {
-    let sequence_cleaned = sequence_clean(sequence);
+export function sequence_complement(sequence_parsed) {
+    let seq = sequence_get(sequence_parsed);
     //TODO 考虑RNA修饰
-    let res = sequence_cleaned.replace(/[ACGTU]/g, (match) => {
+    let res = seq.replace(/[ACGTUI]/g, (match) => {
         switch (match) {
             case 'A':
                 return 'T';
             case 'C':
                 return 'G';
+            case 'I':
+                return 'C';
             case 'G':
                 return 'C';
             case 'T':
@@ -210,5 +292,6 @@ export function sequence_value(sequence, type, conc) {
     return (sequence_cleaned != '' ? oligo_value : { tm: 0, weight: 0, ext: 0, gc: 0 });
 }
 
-let test_seq = 'ACG TGA TCG ATC TCG ATT T';
-console.log(sequence_verify(test_seq, 'DNA'), sequence_counts(test_seq), sequence_value(test_seq, 'DNA'));
+const test_seq = 'ACG TGA TCG ATC TCG ATT T';
+const seq_parsed = sequence_parse(test_seq);
+console.log(sequence_verify(test_seq, 'DNA'), sequence_length(seq_parsed), sequence_value(test_seq, 'DNA'));

@@ -4,7 +4,7 @@ import { Textarea } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { Select, SelectItem } from "@nextui-org/select";
 import { useEffect, useState } from "react";
-import { sequence_verify, sequence_counts, sequence_complement, sequence_value } from "@/lib/oligo";
+import { sequence_verify, sequence_length, sequence_complement, sequence_value, sequence_parse } from "@/lib/oligo";
 import { ResultCard, ResultCardGroup } from "@/components/ResultCard";
 import { Modal, ModalContent, useDisclosure } from "@nextui-org/modal";
 import ConcSetting from "./concentrations_setting";
@@ -17,6 +17,7 @@ export default function OligoUI() {
     const [seqType, setSeqType] = useState('DNA');
     const [verified, setVerified] = useState(true);
     const [sequence, setSequence] = useState('');
+    const [parsed, setParsed] = useState([]);
     const [valid, setValid] = useState(false);
     const [conc, setConc] = useImmer({ target: 'DNA', oligo: 0.25, na: 50, mg: 0, dntps: 0, idk: false });
 
@@ -25,21 +26,47 @@ export default function OligoUI() {
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+    const handleInput = (value) => {
+        ///console.log('value', value);
+        setSequence(value);
+        const verified_here = sequence_verify(value, seqType);
+        //console.log('verified', verified_here);
+        setVerified(verified_here);
+        if (verified_here) {
+            setParsed(sequence_parse(value));
+
+        }
+    };
 
     useEffect(() => {
-        setValid((seqType != '' && verified) ? true : false);
-        //console.log('from ui', conc);
-        if (valid) {
-            setBaseCount(sequence_counts(sequence));
-            setComplement(sequence_complement(sequence));
-            //console.log(oligoValue)
+        if (verified) {
+            //console.log('parsed', parsed);
+            setBaseCount(sequence_length(parsed));
+            setComplement(sequence_complement(parsed));
             setOligoValue(sequence_value(sequence, seqType));
         } else {
             setBaseCount(0);
             setComplement('');
             setOligoValue({ tm: 0, weight: 0, ext: 0, gc: 0 });
         }
-    }, [seqType, sequence, verified, valid, conc]);
+    }, [verified,parsed,sequence, seqType]);
+
+    // useEffect(() => {
+
+    //     //setValid(verified ? true : false);
+    //     //console.log('from ui', conc);
+    //     if (verified) {
+    //         // setParsed(sequence_parse(sequence))
+    //         setBaseCount(sequence_length(parsed));
+    //         setComplement(sequence_complement(parsed));
+    //         //console.log(oligoValue)
+    //         setOligoValue(sequence_value(sequence, seqType));
+    //     } else {
+    //         setBaseCount(0);
+    //         setComplement('');
+    //         setOligoValue({ tm: 0, weight: 0, ext: 0, gc: 0 });
+    //     }
+    // }, [seqType, sequence, verified, valid, conc, parsed]);
 
     return (
         <main className="w-full">
@@ -66,6 +93,12 @@ export default function OligoUI() {
                     <SelectItem key="RNA" value="RNA">
                         RNA
                     </SelectItem>
+                    <SelectItem key="TNA" value="TNA">
+                        TNA
+                    </SelectItem>
+                    <SelectItem key="FANA" value="FANA">
+                        FANA
+                    </SelectItem>
                     ))
                 </Select>
                 <>
@@ -90,15 +123,11 @@ export default function OligoUI() {
                 placeholder="Enter your sequence"
                 className="max-w-full my-2 break-all"
                 value={sequence}
-                onValueChange={(value) => {
-                    setSequence(value);
-                    setVerified(sequence_verify(value, seqType));
-                    //console.log(sequence, seqType, verified);
-                }}
+                onValueChange={handleInput}
             />
             <div className="grid grid-cols-2 w-full">
                 <span className="self-center">Bases {baseCount}</span>
-                <Button color="danger" className="place-self-end" onClick={() => { setSequence(''); setVerified(sequence_verify('', seqType)); }}>Clear</Button>
+                <Button color="danger" className="place-self-end" onClick={() => { setSequence(''); setVerified(sequence_verify('', seqType)); setParsed([]); }}>Clear</Button>
             </div>
             <ResultCardGroup>
                 <ResultCard title="Complement 3' → 5'" result={complement} type='text' />

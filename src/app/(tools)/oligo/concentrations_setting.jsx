@@ -56,9 +56,9 @@ export default function ConcSetting({ setConc, onClose, conc }) {
                             <SelectItem key="DNA" value="DNA">
                                 DNA
                             </SelectItem>
-                            <SelectItem key="RNA" value="RNA">
+                            {/* <SelectItem key="RNA" value="RNA">
                                 RNA
-                            </SelectItem>
+                            </SelectItem> */}
 
                         </Select>
 

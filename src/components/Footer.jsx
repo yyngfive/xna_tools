@@ -12,7 +12,7 @@ export default function Footer(){
                     <Divider orientation="vertical" />
                     <div><Link isExternal showAnchorIcon color='foreground' href='https://github.com/yyngfive/xna_tools'>Source</Link></div>
                     <Divider orientation="vertical" />
-                    <div><Link isExternal showAnchorIcon color='foreground' >Links</Link></div>
+                    <div><Link isExternal showAnchorIcon color='foreground' href='https://github.com/yyngfive/xna_tools/issues'>Feedback</Link></div>
                 </div>
                 <span >XNA Tools Copyright © 2024 <Link  isExternal href='https://github.com/yyngfive' showAnchorIcon >Asante</Link></span>
                 

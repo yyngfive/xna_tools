@@ -66,6 +66,10 @@ function modification_verify(modi_base) {
         'rG',
         'rU',
         'rI',
+        '5bioA',
+        '5bioT',
+        '5bioC',
+        '5bioG',
     ];
     if (valid_modi.includes(modi_base)) {
         return true;
@@ -109,18 +113,158 @@ export function sequence_length(sequence_parsed) {
 
 }
 
-function tm_value(sequence_cleaned, conc, type) {
-    const { An, Cn, Tn, Gn, Un } = base_count(sequence_cleaned);
-    const seq_len = sequence_cleaned.length;
-    let tm = 0;
-    //TODO 考虑离子浓度的情况
-    if (seq_len <= 13) {
-        //BUG 暂时没有考虑含有U的DNA或类似情况
-        tm = (An + Tn + Un) * 2 + (Gn + Cn) * 4;
+function tm_value(seq, conc, type) {
+    //37摄氏度
+    const NNparam = {
+        AA: {
+            H: -7.6,
+            G: -1.00,
+            S: -21.3,
+        },
+        AT: {
+            H: -7.2,
+            G: -0.88,
+            S: -20.4,
+        },
+        AC: {
+            H: -8.4,
+            G: -1.44,
+            S: -22.4,
+        },
+        AG: {
+            H: -7.8,
+            G: -1.28,
+            S: -21.0,
+        },
+        TA: {
+            H: -7.2,
+            G: -0.58,
+            S: -21.3,
+        },
+        TT: {
+            H: -7.6,
+            G: -1.00,
+            S: -21.3,
+        },
+        TC: {
+            H: -8.2,
+            G: -1.30,
+            S: -22.2,
+        },
+        TG: {
+            H: -8.5,
+            G: -1.45,
+            S: -22.7,
+        },
+        CA: {
+            H: -8.5,
+            G: -1.45,
+            S: -22.7,
+        },
+        CT: {
+            H: -7.8,
+            G: -1.28,
+            S: -21.0,
+        },
+        CC: {
+            H: -8.0,
+            G: -1.84,
+            S: -19.9,
+        },
+        CG: {
+            H: -10.6,
+            G: -2.17,
+            S: -27.2,
+        },
+        GA: {
+            H: -8.2,
+            G: -1.30,
+            S: -22.2,
+        },
+        GT: {
+            H: -8.4,
+            G: -1.44,
+            S: -22.4,
+        },
+        GC: {
+            H: -9.8,
+            G: -2.24,
+            S: -24.4,
+        },
+        GG: {
+            H: -8.0,
+            G: -1.84,
+            S: -19.9,
+        },
+
+    };
+
+    const initiation = {
+        H: 0.2,
+        S: -5.7,
+        G: 1.96,
+    };
+
+    const symmetry = {
+        H: 0,
+        S: -1.4,
+        G: 0.43,
+    };
+
+    const tAT = {
+        H: 2.2,
+        S: 6.9,
+        G: 0.05,
+    };
+
+    const R = 1.9872;
+    const { An, Cn, Tn, Gn, Un,In } = base_count(seq);
+    const seq_len = seq.length;
+    if (conc.idk) {
+        let tm = 0;
+        //TODO 考虑离子浓度的情况
+        if (seq_len <= 13) {
+            //BUG 暂时没有考虑含有U的DNA或类似情况
+            tm = (An + Tn + Un) * 2 + (Gn + Cn) * 4;
+        } else {
+            tm = 64.9 + 41 * (Gn + Cn - 16.4) / seq_len;
+        }
+        return (tm.toFixed(1));
     } else {
-        tm = 64.9 + 41 * (Gn + Cn - 16.4) / seq_len;
+        const pairs = [];
+        let self_comp = false;
+        let x;
+
+        for (let i = 0; i < seq_len - 1; i += 1) {
+            const pair = seq.slice(i, i + 2);
+            pairs.push(pair);
+        }
+        let deltaH = initiation.H;
+        let deltaS = initiation.S;
+        pairs.forEach(e => {
+            deltaS += NNparam[e].S;
+            deltaH += NNparam[e].H;
+        });
+        if (seq[seq_len - 1] == 'A' || seq[seq_len - 1] == 'T') {
+            deltaH += tAT.H;
+            deltaS += tAT.S;
+        }
+        if (self_comp) {
+            deltaH += symmetry.H;
+            deltaS += symmetry.S;
+            x = 1;
+        } else {
+            x = 4;
+        }
+        const tm0 = deltaH * 1000 / (deltaS + R * Math.log(conc.oligo * 2 / (1000 * 1000 * x))) - 273.15;
+        const f_gc = (Cn + Gn) / seq.length
+        //const tm_na = 1 / (1/tm0 + [(4.29 * f_gc -3.95) * Math.log(conc.na / 1000) + 0.940 * Math.log(conc.na / 1000) * Math.log(conc.na / 1000)] / 100000)
+        const deltaS_na = deltaS + 0.368 * (seq_len - 1) * Math.log(conc.na / 1000)
+        const tm_na = deltaH * 1000 / (deltaS_na + R * Math.log(conc.oligo * 2 / (1000 * 1000 * x))) - 273.15;
+        return tm_na.toFixed(1);
+
     }
-    return (tm.toFixed(1));
+
 }
 
 export function sequence_complement(sequence_parsed) {
@@ -146,6 +290,10 @@ export function sequence_complement(sequence_parsed) {
     });
     const complement = res.split('').reverse().join('');
     return (complement);
+}
+
+function seq_gc(seq){
+
 }
 
 function base_count(sequence_cleaned) {
@@ -235,7 +383,7 @@ export function sequence_value(sequence, type, conc) {
         UU: 19600,
     };
 
-    const sequence_cleaned = sequence_clean(sequence);
+    const sequence_cleaned = sequence_get(sequence);
 
 
     //TODO 考虑RNA修饰的分子量，对每个r标记增加一个氧原子分子量
@@ -260,13 +408,13 @@ export function sequence_value(sequence, type, conc) {
             //console.log(e,typeof Ext_DNA[e])
             ext += Ext_DNA[e];
         });
-        console.log(Ai);
+        //console.log(Ai);
         ext = ext - (Ai * Ext_DNA.A + Ci * Ext_DNA.C + Ti * Ext_DNA.T + Gi * Ext_DNA.G);
         oligo_value.weight = weight.toFixed(1);
         oligo_value.ext = ext;
 
         const gc = (100 * (Cn + Gn) / sequence_cleaned.length).toFixed(1);
-        console.log(gc);
+        //console.log(gc);
         oligo_value.gc = gc === NaN ? 0 : gc;
 
     } else if (type === 'RNA') {
@@ -294,4 +442,4 @@ export function sequence_value(sequence, type, conc) {
 
 const test_seq = 'ACG TGA TCG ATC TCG ATT T';
 const seq_parsed = sequence_parse(test_seq);
-console.log(sequence_verify(test_seq, 'DNA'), sequence_length(seq_parsed), sequence_value(test_seq, 'DNA'));
+console.log(sequence_verify(test_seq, 'DNA'), sequence_value(seq_parsed, 'DNA', { idk: false, oligo: 0.25,na:50 }));

@@ -43,13 +43,13 @@ export default function OligoUI() {
             //console.log('parsed', parsed);
             setBaseCount(sequence_length(parsed));
             setComplement(sequence_complement(parsed));
-            setOligoValue(sequence_value(sequence, seqType));
+            setOligoValue(sequence_value(parsed, seqType,conc));
         } else {
             setBaseCount(0);
             setComplement('');
             setOligoValue({ tm: 0, weight: 0, ext: 0, gc: 0 });
         }
-    }, [verified,parsed,sequence, seqType]);
+    }, [verified,parsed, seqType,conc]);
 
     // useEffect(() => {
 

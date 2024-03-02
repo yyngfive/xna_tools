@@ -6,6 +6,12 @@ export const analyzer_config = [
         href: '/oligo',
         doc: '/docs/oligo'
     },
+    {
+        name: 'MW Calculator',
+        desc: 'coming soon',
+        href: '/mw',
+        doc: '/docs/mw'
+    },
 ];
 
 export const visualizer_config = [];

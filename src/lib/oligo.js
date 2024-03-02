@@ -259,6 +259,7 @@ function tm_value(seq, conc, type) {
         const tm0 = deltaH * 1000 / (deltaS + R * Math.log(conc.oligo * 2 / (1000 * 1000 * x))) - 273.15;
         const f_gc = (Cn + Gn) / seq.length
         //const tm_na = 1 / (1/tm0 + [(4.29 * f_gc -3.95) * Math.log(conc.na / 1000) + 0.940 * Math.log(conc.na / 1000) * Math.log(conc.na / 1000)] / 100000)
+        //TODO：不同盐离子算法
         const deltaS_na = deltaS + 0.368 * (seq_len - 1) * Math.log(conc.na / 1000)
         const tm_na = deltaH * 1000 / (deltaS_na + R * Math.log(conc.oligo * 2 / (1000 * 1000 * x))) - 273.15;
         return tm_na.toFixed(1);

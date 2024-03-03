@@ -56,7 +56,7 @@ export function ResultCard({ title, result, type }) {
                     </Table>}
                     {type === 'text' && result}
                 </CardBody>
-                <CardFooter>
+                <CardFooter className=''>
 
                     <Popover placement="bottom" isOpen={isOpen}>
                         <PopoverTrigger>

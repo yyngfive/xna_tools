@@ -35,7 +35,7 @@ export default function ConcSetting({ setConc, onClose, conc }) {
 
     return (
         <>
-            <ModalHeader className="flex flex-col gap-1">Concentrations Setting</ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">Tm Options</ModalHeader>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <ModalBody>
                     <div className="flex flex-col gap-5">

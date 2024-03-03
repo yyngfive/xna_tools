@@ -55,21 +55,26 @@ export function sequence_parse(sequence) {
 
 function modification_verify(modi_base) {
     const valid_modi = [
-        'tA',
-        'tC',
-        'tG',
-        'tT',
-        'tU',
+        '5bioA',
+        '5bioT',
+        '5bioC',
+        '5bioG',
         'rA',
         'rC',
         'rT',
         'rG',
         'rU',
         'rI',
-        '5bioA',
-        '5bioT',
-        '5bioC',
-        '5bioG',
+        'tA',
+        'tC',
+        'tG',
+        'tT',
+        'tU',
+        'fA',
+        'fC',
+        'fG',
+        'fT',
+        'fU',
     ];
     if (valid_modi.includes(modi_base)) {
         return true;
@@ -231,12 +236,14 @@ function tm_value(seq, conc, type) {
         }
         return (tm.toFixed(1));
     } else {
+        //BUG:对U和I碱基的临时处理
+        let d_seq = seq.replaceAll('U','T').replaceAll('I','G')
         const pairs = [];
         let self_comp = false;
         let x;
 
         for (let i = 0; i < seq_len - 1; i += 1) {
-            const pair = seq.slice(i, i + 2);
+            const pair = d_seq.slice(i, i + 2);
             pairs.push(pair);
         }
         let deltaH = initiation.H;
@@ -245,7 +252,7 @@ function tm_value(seq, conc, type) {
             deltaS += NNparam[e].S;
             deltaH += NNparam[e].H;
         });
-        if (seq[seq_len - 1] == 'A' || seq[seq_len - 1] == 'T') {
+        if (d_seq[seq_len - 1] == 'A' || d_seq[seq_len - 1] == 'T') {
             deltaH += tAT.H;
             deltaS += tAT.S;
         }
@@ -257,12 +264,12 @@ function tm_value(seq, conc, type) {
             x = 4;
         }
         const tm0 = deltaH * 1000 / (deltaS + R * Math.log(conc.oligo * 2 / (1000 * 1000 * x))) - 273.15;
-        const f_gc = (Cn + Gn) / seq.length
+        const f_gc = (Cn + Gn) / seq_len
         //const tm_na = 1 / (1/tm0 + [(4.29 * f_gc -3.95) * Math.log(conc.na / 1000) + 0.940 * Math.log(conc.na / 1000) * Math.log(conc.na / 1000)] / 100000)
         //TODO：不同盐离子算法
         const deltaS_na = deltaS + 0.368 * (seq_len - 1) * Math.log(conc.na / 1000)
         const tm_na = deltaH * 1000 / (deltaS_na + R * Math.log(conc.oligo * 2 / (1000 * 1000 * x))) - 273.15;
-        return tm_na.toFixed(1);
+        return tm_na > 0 ? tm_na.toFixed(1) : '-';
 
     }
 
@@ -409,14 +416,15 @@ export function sequence_value(sequence, type, conc) {
             //console.log(e,typeof Ext_DNA[e])
             ext += Ext_DNA[e];
         });
-        //console.log(Ai);
+        
         ext = ext - (Ai * Ext_DNA.A + Ci * Ext_DNA.C + Ti * Ext_DNA.T + Gi * Ext_DNA.G);
         oligo_value.weight = weight.toFixed(1);
-        oligo_value.ext = ext;
-
+       
+        oligo_value.ext = Object.is(ext,NaN) ? '-' : ext;
+        console.log('ext_oligo',oligo_value.ext);
         const gc = (100 * (Cn + Gn) / sequence_cleaned.length).toFixed(1);
         //console.log(gc);
-        oligo_value.gc = gc === NaN ? 0 : gc;
+        oligo_value.gc = Object.is(gc,NaN) ? '-' : gc;
 
     } else if (type === 'RNA') {
         const { An, Cn, Gn, Un } = base_count(sequence_cleaned);
@@ -429,10 +437,10 @@ export function sequence_value(sequence, type, conc) {
             ext += Ext_RNA[e];
         });
         ext = ext - (Ai * Ext_RNA.A + Ci * Ext_RNA.C + Ui * Ext_RNA.U + Gi * Ext_RNA.G);
-        oligo_value.ext = ext;
+        oligo_value.ext = Object.is(ext,NaN) ? '-' : ext;
         const gc = (100 * (Cn + Gn) / sequence_cleaned.length).toFixed(1);
 
-        oligo_value.gc = gc === NaN ? 0 : gc;
+        oligo_value.gc = Object.is(gc,NaN) ? 0 : gc;
 
     }
 

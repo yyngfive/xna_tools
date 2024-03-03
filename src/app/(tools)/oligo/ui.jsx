@@ -3,12 +3,16 @@
 import { Textarea } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { Select, SelectItem } from "@nextui-org/select";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
 import { useEffect, useState } from "react";
 import { sequence_verify, sequence_length, sequence_complement, sequence_value, sequence_parse } from "@/lib/oligo";
 import { ResultCard, ResultCardGroup } from "@/components/ResultCard";
 import { Modal, ModalContent, useDisclosure } from "@nextui-org/modal";
+import {Accordion, AccordionItem} from "@nextui-org/accordion";
 import ConcSetting from "./concentrations_setting";
 import { useImmer } from "use-immer";
+
+import { ChevronDownIcon } from "../../../../public/icons/ChevronDownIcon";
 
 
 export default function OligoUI() {
@@ -25,6 +29,29 @@ export default function OligoUI() {
     const [oligoValue, setOligoValue] = useState({ tm: 0, weight: 0, ext: 0, gc: 0 });
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+    const valid_modi = [
+        {key:'0101',value:'5bioA'},
+        {key:'0102',value:'5bioT'},
+        {key:'0103',value:'5bioC'},
+        {key:'0104',value:'5bioG'},
+        {key:'0201',value:'rA'},
+        {key:'0202',value:'rC'},
+        {key:'0203',value:'rT'},
+        {key:'0204',value:'rG'},
+        {key:'0205',value:'rU'},
+        {key:'0206',value:'rI'},
+        {key:'0301',value:'tA'},
+        {key:'0302',value:'tC'},
+        {key:'0303',value:'tG'},
+        {key:'0304',value:'tT'},
+        {key:'0305',value:'tU'},
+        {key:'0401',value:'fA'},
+        {key:'0402',value:'fC'},
+        {key:'0403',value:'fG'},
+        {key:'0404',value:'fT'},
+        {key:'0405',value:'fU'},
+    ] 
 
     const handleInput = (value) => {
         ///console.log('value', value);
@@ -43,39 +70,23 @@ export default function OligoUI() {
             //console.log('parsed', parsed);
             setBaseCount(sequence_length(parsed));
             setComplement(sequence_complement(parsed));
-            setOligoValue(sequence_value(parsed, seqType,conc));
+            setOligoValue(sequence_value(parsed, seqType, conc));
         } else {
             setBaseCount(0);
             setComplement('');
             setOligoValue({ tm: 0, weight: 0, ext: 0, gc: 0 });
         }
-    }, [verified,parsed, seqType,conc]);
+    }, [verified, parsed, seqType, conc]);
 
-    // useEffect(() => {
-
-    //     //setValid(verified ? true : false);
-    //     //console.log('from ui', conc);
-    //     if (verified) {
-    //         // setParsed(sequence_parse(sequence))
-    //         setBaseCount(sequence_length(parsed));
-    //         setComplement(sequence_complement(parsed));
-    //         //console.log(oligoValue)
-    //         setOligoValue(sequence_value(sequence, seqType));
-    //     } else {
-    //         setBaseCount(0);
-    //         setComplement('');
-    //         setOligoValue({ tm: 0, weight: 0, ext: 0, gc: 0 });
-    //     }
-    // }, [seqType, sequence, verified, valid, conc, parsed]);
 
     return (
         <main className="w-full">
             <div className="flex justify-start gap-3 mt-6">
                 <Select
                     size="sm"
-                    isRequired
-                    label="Type"
-                    className="max-w-40"
+                    label="Set As"
+                    aria-label="type"
+                    className="w-36"
                     labelPlacement="outside-left"
                     defaultSelectedKeys={[seqType]}
                     selectedKeys={[seqType]}
@@ -99,10 +110,31 @@ export default function OligoUI() {
                     <SelectItem key="FANA" value="FANA">
                         FANA
                     </SelectItem>
-                    ))
+
                 </Select>
+                {/* TODO: 自动插入修饰：5‘：插入开头，3’：插入结尾，中间：插入光标后*/}
+                <Dropdown >
+                    <DropdownTrigger>
+                        <Button
+                             size="sm" className="w-32" color="primary" endContent={<ChevronDownIcon/>}
+                        >
+                            Modifications
+                        </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu aria-label="modifications" items={valid_modi}>
+                        {(item) => (
+                            <DropdownItem
+                                key={"modi" + item.key}
+                              
+                            >
+                                {item.value}
+                            </DropdownItem>
+                        )}
+                    </DropdownMenu>
+                </Dropdown>
+        
                 <>
-                    <Button onPress={onOpen} color="primary" size="sm" variant="light">Set concentrations (for Tm value)</Button>
+                    <Button onPress={onOpen} color="primary" size="sm" variant="light">Tm Options</Button>
                     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                         <ModalContent>
                             {(onClose) => (
@@ -125,10 +157,12 @@ export default function OligoUI() {
                 value={sequence}
                 onValueChange={handleInput}
             />
+
             <div className="grid grid-cols-2 w-full">
                 <span className="self-center">Bases {baseCount}</span>
                 <Button color="danger" className="place-self-end" onClick={() => { setSequence(''); setVerified(sequence_verify('', seqType)); setParsed([]); }}>Clear</Button>
             </div>
+
             <ResultCardGroup>
                 <ResultCard title="Complement 3' → 5'" result={complement} type='text' />
                 <ResultCard title="Parameters" result={
@@ -148,7 +182,7 @@ export default function OligoUI() {
             </ResultCardGroup>
 
 
-        </main>
+        </main >
     );
 }
 

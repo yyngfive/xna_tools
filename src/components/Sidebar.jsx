@@ -38,7 +38,7 @@ export default function Sidebar({ type, current }) {
 function Menu({ type, current }) {
 
     return (
-        <Accordion defaultExpandedKeys={["1"]} selectionMode="multiple">
+        <Accordion defaultExpandedKeys={["1"]} >
             <AccordionItem
                 key="1"
                 aria-label="Analyzer"

@@ -1,7 +1,7 @@
 'use client';
 
 import { ToolCard, ToolCardGroup } from '@/components/ToolCard';
-import { analyzer_config, database_config,visualizer_config } from '../../config/tools';
+import { analyzer_config, database_config, visualizer_config } from '../../config/tools';
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 
 
@@ -10,12 +10,11 @@ import { AnalyzerIcon, DatabaseIcon, VisualizerIcon } from '../../public/icons/H
 export default function Home() {
   return (
     <>
-      
-     
-      <div className='mt-5 mb-2 lg:w-2/3 mx-auto'>
-            <h2 className='font-black text-3xl'>Tools</h2>
-            <small>Analyze, Visualize, and Explore the XNA world</small>
-        </div>
+
+      <div className='mt-5 mb-2 lg:w-2/3 mx-3 md:mx-auto'>
+        <h2 className='font-black text-3xl'>Tools</h2>
+        <small>Analyze, Visualize, and Explore the XNA world</small>
+      </div>
       <div className='my-5 lg:w-2/3 mx-auto flex gap-1'>
 
         <Accordion defaultExpandedKeys={["1"]} selectionMode="multiple">
@@ -40,8 +39,8 @@ export default function Home() {
             title={<h3 className='font-bold text-lg text-secondary-600' >Visualizer</h3>}
           >
             {visualizer_config.map((item, index) => (
-                <ToolCard key={index} tool_info={item}></ToolCard>
-              ))}
+              <ToolCard key={index} tool_info={item}></ToolCard>
+            ))}
           </AccordionItem>
           <AccordionItem
             key="3"

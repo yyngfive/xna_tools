@@ -5,7 +5,7 @@ export const metadata = {
     title: "MW Calculator",
 };
 
-export default function Oligo() {
+export default function MW() {
 
     return (
         <div>

@@ -12,6 +12,12 @@ export const analyzer_config = [
         href: '/mw',
         doc: '/docs/mw'
     },
+    {
+        name: 'ConcHelper',
+        desc: 'coming soon',
+        href: '/conc',
+        doc: '/docs/conc'
+    },
 ];
 
 export const visualizer_config = [];

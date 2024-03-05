@@ -70,7 +70,7 @@ function ConcItem({ title,units,default_unit,handleChange}) {
 
     return (
         <div className="flex flex-row gap-3 ml-1 mr-3">
-            <span className="text-sm flex-auto w-28">{title}</span>
+            <span className="text-sm flex-auto w-28 my-auto">{title}</span>
             <ValueInput units={units} default_unit={default_unit} handleChange={handleChange}/>
         </div>
     );

@@ -1,13 +1,15 @@
 'use client';
-
+import useTranslation from 'next-translate/useTranslation';
 import { ToolCard, ToolCardGroup } from '@/components/ToolCard';
-import { analyzer_config, database_config, visualizer_config } from '../../config/tools';
+import { analyzer_config, database_config, visualizer_config } from '../../../config/tools';
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 
 
-import { AnalyzerIcon, DatabaseIcon, VisualizerIcon } from '../../public/icons/HomeIcons';
+import { AnalyzerIcon, DatabaseIcon, VisualizerIcon } from '../../../public/icons/HomeIcons';
 
 export default function Home() {
+
+  const { lang } = useTranslation("common");
   return (
     <>
 

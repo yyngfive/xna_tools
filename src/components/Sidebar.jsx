@@ -1,5 +1,5 @@
 'use client';
-
+import useTranslation from 'next-translate/useTranslation';
 import { Listbox, ListboxItem } from "@nextui-org/listbox";
 import { analyzer_config, database_config, visualizer_config } from '../../config/tools';
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
@@ -12,11 +12,11 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure
 export default function Sidebar({ type, current }) {
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+    
     return (
         <>
             <div className='w-56 flex-initial hidden sm:flex'>
-                <Menu type={type} current={current}/>
+                <Menu type={type} current={current} />
             </div >
             <Button isIconOnly color="primary" className="fixed right-7 bottom-28 z-10 sm:hidden" onPress={onOpen}><PlusIcon /></Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={true} isKeyboardDismissDisabled={true}>
@@ -37,6 +37,8 @@ export default function Sidebar({ type, current }) {
 
 function Menu({ type, current }) {
 
+    const { t, lang } = useTranslation("common");
+    
     return (
         <Accordion defaultExpandedKeys={["1"]} >
             <AccordionItem
@@ -47,7 +49,7 @@ function Menu({ type, current }) {
             >
                 <Listbox>
                     {analyzer_config.map((item, index) => (
-                        <ListboxItem key={index} href={type === 'docs' ? item.doc : item.href}>
+                        <ListboxItem key={index} href={type === 'docs' ? '/'+lang+item.doc : '/'+lang+item.href}>
                             <span className='font-bold'>{item.name}</span>
                         </ListboxItem>
                     ))}
@@ -62,7 +64,7 @@ function Menu({ type, current }) {
                 title={<h3 className='font-bold text-lg text-secondary-600' >Visualizer</h3>}
             >
                 {visualizer_config.map((item, index) => (
-                    <ListboxItem key={index} href={type === 'docs' ? item.doc : item.href}>
+                    <ListboxItem key={index} href={type === 'docs' ? '/'+lang+item.doc : '/'+lang+item.href}>
                         <span className='font-bold'>{item.name}</span>
                     </ListboxItem>
                 ))}
@@ -74,7 +76,7 @@ function Menu({ type, current }) {
                 title={<h3 className='font-bold text-lg text-success-600' >Database</h3>}>
                 <Listbox>
                     {database_config.map((item, index) => (
-                        <ListboxItem key={index} href={type === 'docs' ? item.doc : item.href}>
+                        <ListboxItem key={index} href={type === 'docs' ? '/'+lang+item.doc : '/'+lang+item.href}>
                             <span className='font-bold'>{item.name}</span>
                         </ListboxItem>
                     ))}

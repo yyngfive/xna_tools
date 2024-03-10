@@ -1,5 +1,6 @@
-'use client';
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu,NavbarMenuItem } from "@nextui-org/navbar";
+"use client";
+import useTranslation from 'next-translate/useTranslation';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@nextui-org/navbar";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { Link } from '@nextui-org/link';
 import { useState } from "react";
@@ -7,7 +8,7 @@ import { useState } from "react";
 export default function NavBar() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const { t, lang } = useTranslation('common');
 
   return (
     <Navbar shouldHideOnScroll isBordered>
@@ -24,18 +25,18 @@ export default function NavBar() {
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
 
         <NavbarItem>
-          <Link color="foreground" href="/">
-            Tools
+          <Link color="foreground" href={`/${lang}`}>
+            {t("title_tools")}
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="/docs/oligo">
-            Docs
+          <Link color="foreground" href={`/${lang}/docs/oligo`}>
+            {t("title_docs")}
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="/about">
-            About
+          <Link color="foreground" href={`/${lang}/about`}>
+            {t("title_about")}
           </Link>
         </NavbarItem>
       </NavbarContent>
@@ -45,22 +46,22 @@ export default function NavBar() {
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu>
-          <NavbarMenuItem >
-            <Link color="foreground" className="w-full" href="/" size="lg">
-              Tools
-            </Link>
-          </NavbarMenuItem>
-          <NavbarMenuItem >
-            <Link color="foreground" className="w-full" href="/docs/oligo" size="lg">
-              Docs
-            </Link>
-          </NavbarMenuItem>
-          <NavbarMenuItem >
-            <Link color="foreground" className="w-full" href="/about" size="lg">
-              About
-            </Link>
-          </NavbarMenuItem>
-        
+        <NavbarMenuItem >
+          <Link color="foreground" className="w-full" href={`/${lang}`} size="lg">
+            {t("title_tools")}
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem >
+          <Link color="foreground" className="w-full" href={`/${lang}/docs/oligo`} size="lg">
+            {t('title.docs')}
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem >
+          <Link color="foreground" className="w-full" href={`/${lang}/about`} size="lg">
+            {t('title_about')}
+          </Link>
+        </NavbarMenuItem>
+
       </NavbarMenu>
     </Navbar>
   );

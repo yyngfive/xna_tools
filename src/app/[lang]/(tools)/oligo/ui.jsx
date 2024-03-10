@@ -12,7 +12,7 @@ import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import ConcSetting from "./concentrations_setting";
 import { useImmer } from "use-immer";
 
-import { ChevronDownIcon } from "../../../../public/icons/ChevronDownIcon";
+import { ChevronDownIcon } from "../../../../../public/icons/ChevronDownIcon";
 
 
 export default function OligoUI() {

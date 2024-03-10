@@ -7,6 +7,7 @@ import { Switch } from "@nextui-org/switch";
 import SunIcon from "../../public/icons/SunIcon";
 import MoonIcon from "../../public/icons/MoonIcon";
 
+
 export function ThemeSwitcher() {
 
     const { theme, setTheme } = useTheme();

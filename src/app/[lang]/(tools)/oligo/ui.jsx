@@ -82,7 +82,9 @@ export default function OligoUI() {
     return (
         <main className="w-full">
             <div className="flex justify-start gap-3 mt-6">
+                {/* TODO：改成dropdown */}
                 <Select
+                
                     size="sm"
                     label="Set As"
                     aria-label="type"

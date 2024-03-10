@@ -1,9 +1,11 @@
 "use client";
 import useTranslation from 'next-translate/useTranslation';
+
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem } from "@nextui-org/navbar";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { Link } from '@nextui-org/link';
 import { useState } from "react";
+import ChangeLanguage from './ChangeLang';
 
 export default function NavBar() {
 
@@ -42,9 +44,12 @@ export default function NavBar() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
+
+          <ChangeLanguage/>
           <ThemeSwitcher />
         </NavbarItem>
       </NavbarContent>
+
       <NavbarMenu>
         <NavbarMenuItem >
           <Link color="foreground" className="w-full" href={`/${lang}`} size="lg">
@@ -53,7 +58,7 @@ export default function NavBar() {
         </NavbarMenuItem>
         <NavbarMenuItem >
           <Link color="foreground" className="w-full" href={`/${lang}/docs/oligo`} size="lg">
-            {t('title.docs')}
+            {t('title_docs')}
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem >

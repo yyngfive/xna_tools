@@ -42,7 +42,7 @@ export default function ConcSetting({ setConc, onClose, conc }) {
                         <Select
                             {...register("target", { required: !conc.idk })}
                             size='sm'
-
+                            disallowEmptySelection
                             label="Type"
                             className=""
                             labelPlacement="outside-left"

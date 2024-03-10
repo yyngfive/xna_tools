@@ -5,7 +5,7 @@ import matter from 'gray-matter'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 
 export async function generateStaticParams() {
-    const files = fs.readdirSync(path.join(process.cwd(),'src/app/docs/content'))
+    const files = fs.readdirSync(path.join(process.cwd(),'src/app/[lang]/docs/content'))
 
     const paths = files.map(filename => ({
         slug: filename.replace('.mdx', '')
@@ -15,7 +15,7 @@ export async function generateStaticParams() {
 }
 
 function getPost({slug}){
-    const markdownFile = fs.readFileSync(path.join(process.cwd(),'src/app/docs/content',slug + '.mdx'), 'utf-8')
+    const markdownFile = fs.readFileSync(path.join(process.cwd(),'src/app/[lang]/docs/content',slug + '.mdx'), 'utf-8')
 
     const { data: frontMatter, content } = matter(markdownFile)
 

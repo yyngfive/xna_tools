@@ -9,12 +9,12 @@ import { AnalyzerIcon, DatabaseIcon, VisualizerIcon } from '../../../public/icon
 
 export default function Home() {
 
-  const { lang } = useTranslation("common");
+  const { t,lang } = useTranslation("common");
   return (
     <>
 
       <div className='mt-5 mb-2 lg:w-2/3 mx-3 md:mx-auto'>
-        <h2 className='font-black text-3xl'>Tools</h2>
+        <h2 className='font-black text-3xl'>{t('tools')}</h2>
         <small>Analyze, Visualize, and Explore the XNA world</small>
       </div>
       <div className='my-5 lg:w-2/3 mx-auto flex gap-1'>

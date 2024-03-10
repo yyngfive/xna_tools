@@ -11,10 +11,10 @@ export function middleware(request) {
     const pathnameHasLocale = locales.some(
         (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
     );
-    if(pathname === '/'){
-        request.nextUrl.pathname = '/en/oligo'
-        return NextResponse.redirect(request.nextUrl);
-    }
+    
+    //request.nextUrl.pathname = '/en/oligo'
+    //return NextResponse.redirect(request.nextUrl);
+    
     if (pathnameHasLocale) return;
 
     // Redirect if there is no locale

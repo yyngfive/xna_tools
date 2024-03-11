@@ -16,12 +16,6 @@
 - Docs: MDX
 - Deployed: Vercel
 
-### 计划
-#### 相关网站收录
-[] DNAzyme数据库
-[] Aptamer数据库
-[] RNA折叠可视化
-#### 寡核苷酸计算器
 
 
 

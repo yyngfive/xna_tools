@@ -1,5 +1,8 @@
 import "./globals.css";
 import { Providers } from "./providers";
+import useTranslation from 'next-translate/useTranslation';
+import i18n from '../../../i18n'
+import { redirect } from 'next/navigation'
 import NavBar from '@/components/NavBar';
 import Footer from "@/components/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -11,8 +14,14 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+
+  const { lang } = useTranslation("common");
+  
+
+  //if (!i18n.locales.includes(lang)) redirect(`/${i18n.defaultLocale}/${lang}`)
+
   return (
-    <html lang="en" className="light">
+    <html lang={lang} className="light">
       <body >
         <Providers>
           <NavBar />

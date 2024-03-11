@@ -12,7 +12,7 @@ import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import ConcSetting from "./concentrations_setting";
 import { useImmer } from "use-immer";
 
-import { ChevronDownIcon } from "../../../../public/icons/ChevronDownIcon";
+import { ChevronDownIcon } from "../../../../../public/icons/ChevronDownIcon";
 
 
 export default function OligoUI() {
@@ -82,7 +82,9 @@ export default function OligoUI() {
     return (
         <main className="w-full">
             <div className="flex justify-start gap-3 mt-6">
+                {/* TODO：改成dropdown */}
                 <Select
+                
                     size="sm"
                     label="Set As"
                     aria-label="type"
@@ -177,6 +179,8 @@ export default function OligoUI() {
                             { key: '2', name: 'GC Content', value: oligoValue.gc + ' %' },
                             { key: '3', name: 'Tm Value', value: oligoValue.tm + ' ℃' },
                             { key: '4', name: 'Extinction Coefficient', value: oligoValue.ext + ' L/(mole·cm)' },
+                            { key: '5', name: 'μM·cm/OD260', value: Number(((1 / oligoValue.ext) * 1000000).toFixed(1)) },
+                            { key: '6', name: 'ng·cm/(μL·OD260)', value: Number(((oligoValue.weight / oligoValue.ext) * 1000).toFixed(2)) },
                         ]
                     }
                 } type='table' />

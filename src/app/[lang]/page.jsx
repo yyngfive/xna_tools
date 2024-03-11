@@ -1,18 +1,20 @@
 'use client';
-
+import useTranslation from 'next-translate/useTranslation';
 import { ToolCard, ToolCardGroup } from '@/components/ToolCard';
-import { analyzer_config, database_config, visualizer_config } from '../../config/tools';
+import { analyzer_config, database_config, visualizer_config } from '../../../config/tools';
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 
 
-import { AnalyzerIcon, DatabaseIcon, VisualizerIcon } from '../../public/icons/HomeIcons';
+import { AnalyzerIcon, DatabaseIcon, VisualizerIcon } from '../../../public/icons/HomeIcons';
 
 export default function Home() {
+
+  const { t,lang } = useTranslation("common");
   return (
     <>
 
       <div className='mt-5 mb-2 lg:w-2/3 mx-3 md:mx-auto'>
-        <h2 className='font-black text-3xl'>Tools</h2>
+        <h2 className='font-black text-3xl'>{t('tools')}</h2>
         <small>Analyze, Visualize, and Explore the XNA world</small>
       </div>
       <div className='my-5 lg:w-2/3 mx-auto flex gap-1'>

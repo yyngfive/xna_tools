@@ -1,16 +1,18 @@
 'use client';
 
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
+import useTranslation from 'next-translate/useTranslation';
 import { Link } from "@nextui-org/link";
 import { Image } from "@nextui-org/image";
 import NextImage from "next/image";
 
 export function ToolCard({ tool_info }) {
     const { name, desc, href, doc } = tool_info;
+    const { lang } = useTranslation('common');
     return (
         <>
             <Card className="h-60 w-60 " isPressable shadow="sm" onPress={() => {
-                window.open(href, '_blank');
+                window.open('/'+lang+href, '_blank');
             }}>
 
                 <CardHeader>
@@ -24,7 +26,7 @@ export function ToolCard({ tool_info }) {
                     <p className="absolute bottom-1 left-3 right-3">{desc}</p>
                 </CardBody>
                 <CardFooter>
-                    <Link color="primary" href={doc} >
+                    <Link color="primary" href={'/'+lang+doc} >
                         User Guide
                     </Link>
                 </CardFooter>

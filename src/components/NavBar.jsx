@@ -45,7 +45,7 @@ export default function NavBar() {
       <NavbarContent justify="end">
         <NavbarItem>
 
-          <ChangeLanguage/>
+          <ChangeLanguage lang={lang}/>
           <ThemeSwitcher />
         </NavbarItem>
       </NavbarContent>

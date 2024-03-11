@@ -1,40 +1,54 @@
 'use client';
 
 import { Select, SelectSection, SelectItem } from "@nextui-org/select";
-import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@nextui-org/table";
+import { n_by_unit } from "@/lib/conc";
 import { Input } from "@nextui-org/input";
 import { cm } from "./common_molecule";
 import { Link } from "@nextui-org/link";
-import { volume, mass, density, mw, amount, molarity, massconc } from "./units";
+import { units_list } from "./units";
 import { useEffect, useRef, useState } from "react";
 
 export default function ConcUi() {
 
     const [ori, setOri] = useState({ vol: 0.0, mass: 0.0, density: 0.0, amount: 0.0, mw: 0.0, massconc: 0.0, mol: 0.0 });
+    const [oriStock, setOriStock] = useState({ vol: 0.0, mass: 0.0, density: 0.0, amount: 0.0, mw: 0.0, massconc: 0.0, mol: 0.0 });
+    const [oriUnit, setOriUnit] = useState({ vol: 'mL', mass: 'g', density: 'gpermL', amount: 'mole', mw: 'gpermole', massconc: 'gperL', mol: 'M' });
     const [dil, setDil] = useState({ vol: 0.0, mass: 0.0, density: 0.0, massconc: 0.0, mol: 0.0 });
-    const ref_vol1 = useRef(0.0);
+    
 
-    const handleVol1 = () => {
-        console.log(ref_vol1.current.value);
-        // setOri({
-        //     ...ori,
-        //     vol:Number(ref_vol1.current.value),
-        // })
+    const handleVol1 = (value) => {
+        const stock = n_by_unit('vol',oriUnit['vol']) * Number(value)
+        console.log(stock);
+         setOriStock({
+             ...oriStock,
+             vol:stock,
+         })
+         setOri({
+            ...ori,
+            vol:Number(value),
+        })
     };
     // TODO：单位切换逻辑：已有数值：自动对数值进行单位换算，显示新的值
     // 修改数值：根据新的单位计算其他数据值
     // 计算时考虑单位
     const handleUnitVol1 = (value) => {
-        console.log('unit', value);
-
+        //console.log('unit', value);
+        var unit
+        for (const item of value) {
+            unit = item
+          }
+        setOriUnit({
+            ...oriUnit,
+            vol: unit,
+        });
         setOri({
             ...ori,
-            vol: 3 * ref_vol1.current.value,
-        });
+            vol:Number(value) / n_by_unit('vol',unit),
+        })
     };
 
     useEffect(() => {
-        ref_vol1.current.value = ori.vol;
+        
         console.log('ori', ori);
     }, [ori]);
 
@@ -58,38 +72,38 @@ export default function ConcUi() {
                 {/* TODO:重置按钮 */}
                 <span className="w-full text-lg font-bold my-2">Original</span>
                 <div className="flex flex-col  gap-3">
-                    <ConcItem title="Volume1" units={volume} default_unit={'mL'} handleChange={handleVol1} handleSelect={handleUnitVol1} valueRef={ref_vol1} />
-                    <ConcItem title="Mass1" units={mass} default_unit={'g'} />
-                    <ConcItem title="Density1" units={density} default_unit={'gpermL'} />
-                    <ConcItem title="Amount of Substance" units={amount} default_unit={'mol'} />
-                    <ConcItem title="Molecular Weight" units={mw} default_unit={'gpermol'} />
-                    <ConcItem title="Mass Concentration1" units={massconc} default_unit={'gperL'} />
-                    <ConcItem title="Molarity1" units={molarity} default_unit={'mM'} />
+                    <ConcItem title="Volume1" units={units_list['volume']} default_unit={'mL'} handleChange={handleVol1} handleSelect={handleUnitVol1} value={ori.vol} />
+                    <ConcItem title="Mass1" units={units_list['mass']} default_unit={'g'} />
+                    <ConcItem title="Density1" units={units_list['density']} default_unit={'gpermL'} />
+                    <ConcItem title="Amount of Substance" units={units_list['amount']} default_unit={'mole'} />
+                    <ConcItem title="Molecular Weight" units={units_list['mw']} default_unit={'gpermole'} />
+                    <ConcItem title="Mass Concentration1" units={units_list['massconc']} default_unit={'gperL'} />
+                    <ConcItem title="Molarity1" units={units_list['molarity']} default_unit={'mM'} />
                 </div>
                 <span className="w-full text-lg font-bold my-2">Diluted</span>
                 <div className="flex flex-col  gap-3">
-                    <ConcItem title="Volume2" units={volume} default_unit={'mL'} />
-                    <ConcItem title="Mass2" units={mass} default_unit={'g'} />
-                    <ConcItem title="Density2" units={density} default_unit={'gpermL'} />
-                    <ConcItem title="Mass Concentration2" units={massconc} default_unit={'gperL'} />
-                    <ConcItem title="Molarity2" units={molarity} default_unit={'mM'} />
+                    <ConcItem title="Volume2" units={units_list['volume']} default_unit={'mL'} />
+                    <ConcItem title="Mass2" units={units_list['mass']} default_unit={'g'} />
+                    <ConcItem title="Density2" units={units_list['density']} default_unit={'gpermL'} />
+                    <ConcItem title="Mass Concentration2" units={units_list['massconc']} default_unit={'gperL'} />
+                    <ConcItem title="Molarity2" units={units_list['molarity']} default_unit={'mM'} />
                 </div>
             </div>
         </>
     );
 }
 
-function ConcItem({ title, units, default_unit, handleChange, handleSelect, valueRef }) {
+function ConcItem({ title, units, default_unit, handleChange, handleSelect, value }) {
 
     return (
         <div className="flex flex-row gap-3 ml-1 mr-3">
             <span className="text-sm flex-auto w-28 my-auto">{title}</span>
-            <ValueInput units={units} default_unit={default_unit} handleChange={handleChange} handleSelect={handleSelect} valueRef={valueRef} />
+            <ValueInput units={units} default_unit={default_unit} handleChange={handleChange} handleSelect={handleSelect} value={value} />
         </div>
     );
 }
 
-function ValueInput({ units, default_unit, handleChange, handleSelect, valueRef }) {
+function ValueInput({ units, default_unit, handleChange, handleSelect, value }) {
 
     return (
         <Input
@@ -99,8 +113,10 @@ function ValueInput({ units, default_unit, handleChange, handleSelect, valueRef 
             placeholder="0.00"
             labelPlacement="outside"
             variant="underlined"
-            onBlur={handleChange}
-            ref={valueRef}
+            //onBlur={handleChange}
+            //ref={valueRef}
+            value = {value}
+            onValueChange={handleChange}
 
             endContent={
                 <Select

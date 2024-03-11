@@ -179,6 +179,8 @@ export default function OligoUI() {
                             { key: '2', name: 'GC Content', value: oligoValue.gc + ' %' },
                             { key: '3', name: 'Tm Value', value: oligoValue.tm + ' ℃' },
                             { key: '4', name: 'Extinction Coefficient', value: oligoValue.ext + ' L/(mole·cm)' },
+                            { key: '5', name: 'μM·cm/OD260', value: Number(((1 / oligoValue.ext) * 1000000).toFixed(1)) },
+                            { key: '6', name: 'ng·cm/(μL·OD260)', value: Number(((oligoValue.weight / oligoValue.ext) * 1000).toFixed(2)) },
                         ]
                     }
                 } type='table' />

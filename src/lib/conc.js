@@ -1,8 +1,8 @@
-import { units } from "@/app/[lang]/(tools)/conc/units";
+import { units_list } from "../app/units";
 
 export function n_by_unit(type,unit){
     
-    n = findObjectByKey(units[type],unit).n
+    const n = findObjectByKey(units_list[type],unit).n
     return n
 }
 

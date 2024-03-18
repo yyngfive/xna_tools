@@ -2,5 +2,8 @@
   "title_tools": "工具",
   "title_docs": "文档",
   "title_about": "关于",
-  "tools":"工具集"
+  "tools": "工具集",
+  "blog": "博客",
+  "feedback": "反馈",
+  "source": "源代码"
 }

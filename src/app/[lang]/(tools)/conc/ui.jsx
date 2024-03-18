@@ -58,21 +58,21 @@ export default function ConcUi() {
                 {/* TODO:重置按钮 */}
                 <span className="w-full text-lg font-bold my-2">Original</span>
                 <div className="flex flex-col  gap-3">
-                    <ConcItem title="Volume1" units={volume} default_unit={'mL'} handleChange={handleVol1} handleSelect={handleUnitVol1} valueRef={ref_vol1} />
-                    <ConcItem title="Mass1" units={mass} default_unit={'g'} />
-                    <ConcItem title="Density1" units={density} default_unit={'gpermL'} />
+                    <ConcItem title="Volume 1" units={volume} default_unit={'mL'} handleChange={handleVol1} handleSelect={handleUnitVol1} valueRef={ref_vol1} />
+                    <ConcItem title="Mass 1" units={mass} default_unit={'g'} />
+                    <ConcItem title="Density 1" units={density} default_unit={'gpermL'} />
                     <ConcItem title="Amount of Substance" units={amount} default_unit={'mol'} />
                     <ConcItem title="Molecular Weight" units={mw} default_unit={'gpermol'} />
-                    <ConcItem title="Mass Concentration1" units={massconc} default_unit={'gperL'} />
-                    <ConcItem title="Molarity1" units={molarity} default_unit={'mM'} />
+                    <ConcItem title="Mass Concentration 1" units={massconc} default_unit={'gperL'} />
+                    <ConcItem title="Molarity 1" units={molarity} default_unit={'mM'} />
                 </div>
                 <span className="w-full text-lg font-bold my-2">Diluted</span>
                 <div className="flex flex-col  gap-3">
-                    <ConcItem title="Volume2" units={volume} default_unit={'mL'} />
-                    <ConcItem title="Mass2" units={mass} default_unit={'g'} />
-                    <ConcItem title="Density2" units={density} default_unit={'gpermL'} />
-                    <ConcItem title="Mass Concentration2" units={massconc} default_unit={'gperL'} />
-                    <ConcItem title="Molarity2" units={molarity} default_unit={'mM'} />
+                    <ConcItem title="Volume 2" units={volume} default_unit={'mL'} />
+                    <ConcItem title="Mass 2" units={mass} default_unit={'g'} />
+                    <ConcItem title="Density 2" units={density} default_unit={'gpermL'} />
+                    <ConcItem title="Mass Concentration 2" units={massconc} default_unit={'gperL'} />
+                    <ConcItem title="Molarity 2" units={molarity} default_unit={'mM'} />
                 </div>
             </div>
         </>

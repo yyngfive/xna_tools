@@ -103,21 +103,23 @@ export default function ConcUi() {
                 {/* TODO:重置按钮 */}
                 <span className="w-full text-lg font-bold my-2">Original</span>
                 <div className="flex flex-col  gap-3">
-                    <ConcItem title="Volume1" default_unit={'mL'} value={ori} type='vol' handleChange={handleOri} handleSelect={handleOriUnit} />
-                    <ConcItem title="Mass1" default_unit={'g'} value={ori} type='mass' handleChange={handleOri} handleSelect={handleOriUnit} />
-                    <ConcItem title="Density1" default_unit={'gpermL'} value={ori} type='density' handleChange={handleOri} handleSelect={handleOriUnit} />
+
+                    <ConcItem title="Volume 1" default_unit={'mL'} value={ori} type='vol' handleChange={handleOri} handleSelect={handleOriUnit} />
+                    <ConcItem title="Mass 1" default_unit={'g'} value={ori} type='mass' handleChange={handleOri} handleSelect={handleOriUnit} />
+                    <ConcItem title="Density 1" default_unit={'gpermL'} value={ori} type='density' handleChange={handleOri} handleSelect={handleOriUnit} />
                     <ConcItem title="Amount of Substance" default_unit={'mole'} value={ori} type='amount' handleChange={handleOri} handleSelect={handleOriUnit} />
                     <ConcItem title="Molecular Weight" default_unit={'gpermole'} value={ori} type='mw' handleChange={handleOri} handleSelect={handleOriUnit} />
-                    <ConcItem title="Mass Concentration1" default_unit={'gperL'} value={ori} type='massconc' handleChange={handleOri} handleSelect={handleOriUnit} />
-                    <ConcItem title="Molarity1" default_unit={'mM'} value={ori} type='mol' handleChange={handleOri} handleSelect={handleOriUnit} />
+                    <ConcItem title="Mass Concentration 1" default_unit={'gperL'} value={ori} type='massconc' handleChange={handleOri} handleSelect={handleOriUnit} />
+                    <ConcItem title="Molarity 1" default_unit={'mM'} value={ori} type='mol' handleChange={handleOri} handleSelect={handleOriUnit} />
                 </div>
                 <span className="w-full text-lg font-bold my-2">Diluted</span>
                 <div className="flex flex-col  gap-3">
-                    <ConcItem title="Volume2" default_unit={'mL'} value={dil} type='vol' handleChange={handleDil} handleSelect={handleDilUnit} />
-                    <ConcItem title="Mass2" default_unit={'g'} value={dil} type='mass' handleChange={handleDil} handleSelect={handleDilUnit} />
-                    <ConcItem title="Density2" default_unit={'gpermL'} value={dil} type='density' handleChange={handleDil} handleSelect={handleDilUnit} />
-                    <ConcItem title="Mass Concentration2" default_unit={'gperL'} value={dil} type='massconc' handleChange={handleDil} handleSelect={handleDilUnit} />
-                    <ConcItem title="Molarity2" default_unit={'mM'} value={dil} type='mol' handleChange={handleDil} handleSelect={handleDilUnit} />
+                    <ConcItem title="Volume 2" default_unit={'mL'} value={dil} type='vol' handleChange={handleDil} handleSelect={handleDilUnit} />
+                    <ConcItem title="Mass 2" default_unit={'g'} value={dil} type='mass' handleChange={handleDil} handleSelect={handleDilUnit} />
+                    <ConcItem title="Density 2" default_unit={'gpermL'} value={dil} type='density' handleChange={handleDil} handleSelect={handleDilUnit} />
+                    <ConcItem title="Mass Concentration 2" default_unit={'gperL'} value={dil} type='massconc' handleChange={handleDil} handleSelect={handleDilUnit} />
+                    <ConcItem title="Molarity 2" default_unit={'mM'} value={dil} type='mol' handleChange={handleDil} handleSelect={handleDilUnit} />
+
                 </div>
             </div>
         </>

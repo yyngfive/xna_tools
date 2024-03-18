@@ -2,5 +2,8 @@
   "title_tools": "Tools",
   "title_docs": "Docs",
   "title_about": "About",
-  "tools": "Tools"
+  "tools": "Tools",
+  "source": "Source",
+  "blog": "Blog",
+  "feedback": "Feedback"
 }

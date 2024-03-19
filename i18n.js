@@ -2,6 +2,7 @@ module.exports = {
     "locales": ["en", "zh"],
     "defaultLocale": "en",
     "pages": {
-      "*": ["common"]
+      "*": ["common"],
+      "/[lang]/(tools)/conc":["conc"]
     }
 }

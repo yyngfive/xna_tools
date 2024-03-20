@@ -1,5 +1,8 @@
 {
-    "Sequence": "DNA Sequence",
-    "Enter your sequence": "Enter your sequence",
-    "Result":"Result"
+  "Sequence": "DNA Sequence",
+  "Enter your sequence": "Enter your sequence",
+  "Result": "Result",
+  "Max Width": "Max Width",
+  "Ok": "Ok",
+  "Clear": "Clear"
 }

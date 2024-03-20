@@ -30,7 +30,7 @@ export default function CleanUi() {
 
     return (
         <>
-        <Input ref={rowRef} type='number' size='sm' className='max-w-32' variant="underlined" labelPlacement='outside-left' label={'Max Width'} isInvalid={!verifiedRow} errorMessage={verifiedRow ? '' : 'Range: 10-100'} defaultValue='30'/>
+        <Input ref={rowRef} type='number' size='sm' className='max-w-32' variant="underlined" labelPlacement='outside-left' label={t('clean:Max Width')} isInvalid={!verifiedRow} errorMessage={verifiedRow ? '' : 'Range: 10-100'} defaultValue='30'/>
             <form>
                 <Textarea
                     isRequired
@@ -43,8 +43,8 @@ export default function CleanUi() {
                     onBlur={handleInput}
                 />
                 <div className='flex flex-row place-content-end my-3 gap-2'>
-                    <Button color="primary" className="text-white" onClick={handleInput}>Ok</Button>
-                    <Button color="danger" type='reset' className="text-white" onClick={() => { handleInput(); }} >Clear</Button>
+                    <Button color="primary" className="text-white" onClick={handleInput}>{t("Ok")}</Button>
+                    <Button color="danger" type='reset' className="text-white" onClick={() => { handleInput(); }} >{t("Clear")}</Button>
                 </div>
             </form>
 

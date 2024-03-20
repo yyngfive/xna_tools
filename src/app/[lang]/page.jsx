@@ -19,7 +19,7 @@ export default function Home() {
       </div>
       <div className='my-5 lg:w-2/3 mx-auto flex gap-1'>
 
-        <Accordion defaultExpandedKeys={["1"]} selectionMode="multiple">
+        <Accordion defaultExpandedKeys={["1"]} >
           <AccordionItem
             key="1"
             aria-label="Analyzer"

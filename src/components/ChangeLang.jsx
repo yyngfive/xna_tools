@@ -13,7 +13,7 @@ export default function ChangeLanguage({lang}){
         'zh':'中文'
     }
 
-    console.log(usePathname());
+   
 
     const current_path = usePathname()
     var url = current_path.slice(3,current_path.length)

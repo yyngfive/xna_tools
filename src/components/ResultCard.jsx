@@ -31,17 +31,21 @@ function table_to_csv(table) {
     return csv;
 }
 
-export function ResultCard({ title, result, type }) {
+export function ResultCard({ title, result, type,className }) {
 
     const [isOpen, setOpen] = useState(false);
-
+    let class_text = "break-all whitespace-pre-wrap"
+    if(className){
+        class_text = className
+    }
+    //TODO:增加折叠选项
     return (
         <>
             <Card shadow='none' className='border' radius='sm'>
                 <CardHeader>
                     <h3 className='font-bold'>{title}</h3>
                 </CardHeader>
-                <CardBody className='break-all'>
+                <CardBody>
                     {type === 'table' && <Table aria-label={title} removeWrapper>
                         <TableHeader columns={result.columns}>
                             {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
@@ -54,7 +58,7 @@ export function ResultCard({ title, result, type }) {
                             )}
                         </TableBody>
                     </Table>}
-                    {type === 'text' && result}
+                    {type === 'text' && <span className={class_text}>{result}</span>}
                 </CardBody>
                 <CardFooter className=''>
 

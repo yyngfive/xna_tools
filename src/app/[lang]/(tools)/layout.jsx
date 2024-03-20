@@ -1,14 +1,14 @@
 
 
 import Sidebar from "@/components/Sidebar";
-//import ToolsProvier from "./provider";
+import ToolsProvier from "./provider";
 
 
 export default function ToolLayout({ children }) {
 
     return (
-        //<ToolsProvier>
-        <>
+        <ToolsProvier>
+        
 
             <div className='my-5 lg:w-2/3 mx-auto flex gap-1'>
                 <Sidebar />
@@ -19,10 +19,10 @@ export default function ToolLayout({ children }) {
 
             </div>
 
-        </>
+        
 
 
-        //</ToolsProvier>
+        </ToolsProvier>
     );
 
 }

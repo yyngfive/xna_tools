@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import i18n from "./i18n";
+import i18n from "../i18n";
 let locales = ['en', 'zh'];
 
 // Get the preferred locale, similar to the above or using a library
@@ -12,8 +12,6 @@ export function middleware(request) {
         (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
     );
     
-    //request.nextUrl.pathname = '/en/oligo'
-    //return NextResponse.redirect(request.nextUrl);
     
     if (pathnameHasLocale) return;
 

@@ -4,6 +4,7 @@ module.exports = {
     "pages": {
       "*": ["common"],
       "/[lang]/(tools)/conc":["conc"],
-      "/[lang]/(tools)/oligo":["oligo"]
+      "/[lang]/(tools)/oligo":["oligo"],
+      "/[lang]/(tools)/clean":["clean"],
     }
 }

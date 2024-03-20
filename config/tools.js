@@ -20,7 +20,14 @@ export const analyzer_config = [
     },
 ];
 
-export const visualizer_config = [];
+export const visualizer_config = [
+    {
+        name: 'CleanSeq',
+        desc:'',
+        href:'/clean',
+        doc:'/docs/clean'
+    }
+];
 
 export const database_config = [
     {

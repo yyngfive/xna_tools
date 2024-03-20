@@ -1,5 +1,6 @@
 'use client';
 import useTranslation from 'next-translate/useTranslation';
+import { usePathname } from 'next/navigation';
 import { Listbox, ListboxItem } from "@nextui-org/listbox";
 import { analyzer_config, database_config, visualizer_config } from '../../config/tools';
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
@@ -9,10 +10,11 @@ import { Button } from "@nextui-org/button";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
 
 
-export default function Sidebar({ type, current }) {
+export default function Sidebar({ type }) {
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    
+    const current = usePathname();
+
     return (
         <>
             <div className='w-56 flex-initial hidden sm:flex'>
@@ -38,9 +40,9 @@ export default function Sidebar({ type, current }) {
 function Menu({ type, current }) {
 
     const { t, lang } = useTranslation("common");
-    
+
     return (
-        <Accordion defaultExpandedKeys={["1"]} >
+        <Accordion defaultExpandedKeys={["1"]} expandedKeys={[current]}>
             <AccordionItem
                 key="1"
                 aria-label="Analyzer"
@@ -49,7 +51,7 @@ function Menu({ type, current }) {
             >
                 <Listbox>
                     {analyzer_config.map((item, index) => (
-                        <ListboxItem key={index} href={type === 'docs' ? '/'+lang+item.doc : '/'+lang+item.href}>
+                        <ListboxItem key={index} href={type === 'docs' ? '/' + lang + item.doc : '/' + lang + item.href}>
                             <span className='font-bold'>{item.name}</span>
                         </ListboxItem>
                     ))}
@@ -63,11 +65,14 @@ function Menu({ type, current }) {
                 startContent={<VisualizerIcon className="text-secondary" />}
                 title={<h3 className='font-bold text-lg text-secondary-600' >Visualizer</h3>}
             >
-                {visualizer_config.map((item, index) => (
-                    <ListboxItem key={index} href={type === 'docs' ? '/'+lang+item.doc : '/'+lang+item.href}>
-                        <span className='font-bold'>{item.name}</span>
-                    </ListboxItem>
-                ))}
+                <Listbox>
+                    {visualizer_config.map((item, index) => (
+                        <ListboxItem key={index} href={type === 'docs' ? '/' + lang + item.doc : '/' + lang + item.href}>
+                            <span className='font-bold'>{item.name}</span>
+                        </ListboxItem>
+                    ))}
+                </Listbox>
+
             </AccordionItem>
             <AccordionItem
                 key="3"
@@ -76,7 +81,7 @@ function Menu({ type, current }) {
                 title={<h3 className='font-bold text-lg text-success-600' >Database</h3>}>
                 <Listbox>
                     {database_config.map((item, index) => (
-                        <ListboxItem key={index} href={type === 'docs' ? '/'+lang+item.doc : '/'+lang+item.href}>
+                        <ListboxItem key={index} href={type === 'docs' ? '/' + lang + item.doc : '/' + lang + item.href}>
                             <span className='font-bold'>{item.name}</span>
                         </ListboxItem>
                     ))}

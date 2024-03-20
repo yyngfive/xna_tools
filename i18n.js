@@ -3,6 +3,7 @@ module.exports = {
     "defaultLocale": "en",
     "pages": {
       "*": ["common"],
-      "/[lang]/(tools)/conc":["conc"]
+      "/[lang]/(tools)/conc":["conc"],
+      "/[lang]/(tools)/oligo":["oligo"]
     }
 }

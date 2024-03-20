@@ -1,5 +1,5 @@
 'use client';
-
+import useTranslation from 'next-translate/useTranslation';
 import { Textarea } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { Select, SelectItem } from "@nextui-org/select";
@@ -16,6 +16,8 @@ import { ChevronDownIcon } from "../../../../../public/icons/ChevronDownIcon";
 
 
 export default function OligoUI() {
+
+    const {t} = useTranslation('oligo')
 
     const [baseCount, setBaseCount] = useState(0);
     const [seqType, setSeqType] = useState('DNA');
@@ -86,7 +88,7 @@ export default function OligoUI() {
                 <Select
                 
                     size="sm"
-                    label="Set As"
+                    label={t('oligo:set-as')}
                     aria-label="type"
                     className="w-36"
                     labelPlacement="outside-left"
@@ -121,8 +123,7 @@ export default function OligoUI() {
                         <Button
                             size="sm" className="w-20" color="primary" endContent={<ChevronDownIcon />}
                         >
-                            Mod
-                        </Button>
+                            {t('oligo:mod')} </Button>
                     </DropdownTrigger>
                     <DropdownMenu aria-label="modifications" items={valid_modi}>
                         {(item) => (
@@ -137,7 +138,7 @@ export default function OligoUI() {
                 </Dropdown>
 
                 <>
-                    <Button onPress={onOpen} color="primary" size="sm" variant="light">Tm Options</Button>
+                    <Button onPress={onOpen} color="primary" size="sm" variant="light">{t('oligo:tm-options')}</Button>
                     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                         <ModalContent>
                             {(onClose) => (
@@ -154,31 +155,31 @@ export default function OligoUI() {
                 maxLength={200}
                 isInvalid={!verified}
                 errorMessage={verified ? '' : 'Please check your sequence'}
-                label="Sequence (5' → 3')"
-                placeholder="Enter your sequence"
+                label={t("oligo:Sequence")+" 5' → 3'"}
+                placeholder={t("oligo:Enter your sequence")}
                 className="max-w-full my-2 break-all"
                 value={sequence}
                 onValueChange={handleInput}
             />
 
             <div className="grid grid-cols-2 w-full">
-                <span className="self-center">Bases {baseCount}</span>
+                <span className="self-center">{t("oligo:Bases")+" "} {baseCount}</span>
                 <Button color="danger" className="place-self-end" onClick={() => { setSequence(''); setVerified(sequence_verify('', seqType)); setParsed([]); }}>Clear</Button>
             </div>
 
             <ResultCardGroup>
-                <ResultCard title="Complement 3' → 5'" result={complement} type='text' />
-                <ResultCard title="Parameters" result={
+                <ResultCard title={t("oligo:Complement")+" 3' → 5'"} result={complement} type='text' />
+                <ResultCard title={t("oligo:Parameters")} result={
                     {
                         columns: [
-                            { key: 'name', label: 'NAME' },
-                            { key: 'value', label: 'VALUE' }
+                            { key: 'name', label: t('oligo:NAME')} ,
+                            { key: 'value', label: t('oligo:VALUE') }
                         ],
                         rows: [
-                            { key: '1', name: 'Molecular Weight', value: oligoValue.weight + ' g/mole' },
-                            { key: '2', name: 'GC Content', value: oligoValue.gc + ' %' },
-                            { key: '3', name: 'Tm Value', value: oligoValue.tm + ' ℃' },
-                            { key: '4', name: 'Extinction Coefficient', value: oligoValue.ext + ' L/(mole·cm)' },
+                            { key: '1', name: t('oligo:Molecular Weight'), value: oligoValue.weight + ' g/mole' },
+                            { key: '2', name: t('oligo:GC Content'), value: oligoValue.gc + ' %' },
+                            { key: '3', name: t('oligo:Tm Value'), value: oligoValue.tm + ' ℃' },
+                            { key: '4', name: t('oligo:Extinction Coefficient'), value: oligoValue.ext + ' L/(mole·cm)' },
                             { key: '5', name: 'μM·cm/OD260', value: Number(((1 / oligoValue.ext) * 1000000).toFixed(1)) },
                             { key: '6', name: 'ng·cm/(μL·OD260)', value: Number(((oligoValue.weight / oligoValue.ext) * 1000).toFixed(2)) },
                         ]

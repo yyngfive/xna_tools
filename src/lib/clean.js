@@ -9,7 +9,7 @@ export function sequence_verify(sequence) {
 }
 
 export function row_verify(row) {
-    if(Number(row) >= 10 && Number(row) <= 100){
+    if(Number(row) >= 10 && Number(row) <= 200){
         return true
     }else{
         return false

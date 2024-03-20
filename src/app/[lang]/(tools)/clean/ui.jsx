@@ -30,7 +30,7 @@ export default function CleanUi() {
 
     return (
         <>
-        <Input ref={rowRef} type='number' size='sm' className='max-w-32' variant="underlined" labelPlacement='outside-left' label={t('clean:Max Width')} isInvalid={!verifiedRow} errorMessage={verifiedRow ? '' : 'Range: 10-100'} defaultValue='30'/>
+        <Input ref={rowRef} type='number' size='sm' className='max-w-32' variant="underlined" labelPlacement='outside-left' label={t('clean:Max Width')} isInvalid={!verifiedRow} errorMessage={verifiedRow ? '' : 'Range: 10-200'} defaultValue='30'/>
             <form>
                 <Textarea
                     isRequired
@@ -50,7 +50,7 @@ export default function CleanUi() {
 
             {/* TODO:增加序列统计信息 */}
             <ResultCardGroup>             
-                    <ResultCard title={t("clean:Result")} result={cleaned} type='text' className={'font-mono whitespace-pre-wrap'}/>
+                    <ResultCard title={t("clean:Result")} result={cleaned} type='text' className={'font-mono whitespace-pre-wrap break-all'}/>
             </ResultCardGroup>
         </>
     );

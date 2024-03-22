@@ -14,11 +14,39 @@ export default function Sidebar({ type }) {
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const current = usePathname();
+    let current_url = current.slice(3, current.length);
+    if (current_url.startsWith('/docs')) {
+        current_url = current_url.slice(5, current_url.length);
+    }
+    let analyzers = [];
+    let visualizers = [];
+    let databases = [];
+    analyzer_config.forEach((i) => {
+        analyzers.push(i.href);
+    });
+    visualizer_config.forEach((i) => {
+        visualizers.push(i.href);
+    });
+    database_config.forEach((i) => {
+        databases.push(i.href);
+    });
+    //console.log(analyzers);
+    let current_id = '1';
+    if (analyzers.includes(current_url)) {
+        current_id = '1';
+    } else if (visualizers.includes(current_url)) {
+        current_id = '2';
+    } else if (databases.includes(current_url)) {
+        current_id = '3';
+    } else {
+        current_id = '1';
+    }
+
 
     return (
         <>
             <div className='w-56 flex-initial hidden sm:flex'>
-                <Menu type={type} current={current} />
+                <Menu type={type} current={current_id} />
             </div >
             <Button isIconOnly color="primary" className="fixed right-7 bottom-28 z-10 sm:hidden" onPress={onOpen}><PlusIcon /></Button>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={true} isKeyboardDismissDisabled={true}>
@@ -42,7 +70,9 @@ function Menu({ type, current }) {
     const { t, lang } = useTranslation("common");
 
     return (
-        <Accordion defaultExpandedKeys={["1"]} expandedKeys={[current]}>
+        <Accordion
+            //defaultExpandedKeys={["1"]} 
+            defaultExpandedKeys={[current]}>
             <AccordionItem
                 key="1"
                 aria-label="Analyzer"

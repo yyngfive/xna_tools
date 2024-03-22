@@ -36,7 +36,7 @@ export function ResultCard({ title, result, type,className }) {
     const [isOpen, setOpen] = useState(false);
     let class_text = "break-all whitespace-pre-wrap"
     if(className){
-        class_text = className
+        class_text += className
     }
     //TODO:增加折叠选项
     return (

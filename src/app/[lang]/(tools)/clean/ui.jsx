@@ -1,17 +1,18 @@
 'use client';
 import useTranslation from 'next-translate/useTranslation';
 import { ResultCard, ResultCardGroup } from "@/components/ResultCard";
-import { Textarea ,Input} from "@nextui-org/input";
+import { Textarea, Input } from "@nextui-org/input";
+import { Select, SelectSection, SelectItem } from "@nextui-org/select";
 import { useRef, useState } from 'react';
 import { Button } from "@nextui-org/button";
-import { sequence_verify, make_dna_clean,row_verify } from '@/lib/clean';
+import { sequence_verify, make_dna_clean, row_verify } from '@/lib/clean';
 export default function CleanUi() {
     const { t } = useTranslation('clean');
     const [verified, setVerified] = useState(true);
     const [verifiedRow, setVerifiedRow] = useState(true);
     const [cleaned, setCleaned] = useState("");
     const sequenceRef = useRef(null);
-    const rowRef = useRef(30)
+    const rowRef = useRef(30);
     const handleInput = () => {
 
         const sequence = sequenceRef.current.value;
@@ -30,7 +31,17 @@ export default function CleanUi() {
 
     return (
         <>
-        <Input ref={rowRef} type='number' size='sm' className='max-w-32' variant="underlined" labelPlacement='outside-left' label={t('clean:Max Width')} isInvalid={!verifiedRow} errorMessage={verifiedRow ? '' : 'Range: 10-200'} defaultValue='30'/>
+            <div className='flex gap-3 my-3'>
+                <Input ref={rowRef} type='number' size='sm' className='max-w-32' variant="underlined" labelPlacement='outside-left' label={t('clean:Max Width')} isInvalid={!verifiedRow} errorMessage={verifiedRow ? '' : 'Range: 10-200'} defaultValue='30' />
+                {/* <Select label={''} size='sm' className='max-w-32' variant='underlined'>
+
+                </Select>
+                <Input label={''} size='sm' variant='underlined' className='max-w-32'/>
+                <Input label={''} size='sm' variant='underlined' className='max-w-32'/>
+                <Input label={''} size='sm' variant='underlined' className='max-w-32'/> */}
+            </div>
+
+
             <form>
                 <Textarea
                     isRequired
@@ -49,8 +60,8 @@ export default function CleanUi() {
             </form>
 
             {/* TODO:增加序列统计信息 */}
-            <ResultCardGroup>             
-                    <ResultCard title={t("clean:Result")} result={cleaned} type='text' className={'font-mono whitespace-pre-wrap break-all'}/>
+            <ResultCardGroup>
+                <ResultCard title={t("clean:Result")} result={cleaned} type='text' className='break-all whitespace-pre-wrap overflow-auto font-mono' />
             </ResultCardGroup>
         </>
     );

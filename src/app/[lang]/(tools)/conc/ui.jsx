@@ -2,6 +2,7 @@
 import useTranslation from 'next-translate/useTranslation';
 import { Select, SelectSection, SelectItem } from "@nextui-org/select";
 import { n_by_unit } from "@/lib/conc";
+import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { cm } from "./common_molecule";
 import { Link } from "@nextui-org/link";
@@ -11,7 +12,7 @@ import { useImmer } from "use-immer";
 // TODO:大数运算
 export default function ConcUi() {
 
-    const {t,lang} = useTranslation('conc')
+    const { t, lang } = useTranslation('conc');
 
     const [ori, setOri] = useImmer({ vol: '', mass: '', density: '', amount: '', mw: '', massconc: '', mol: '' });
     const [oriStock, setOriStock] = useImmer({ vol: 0.0, mass: 0.0, density: 0.0, amount: 0.0, mw: 0.0, massconc: 0.0, mol: 0.0 });
@@ -81,7 +82,7 @@ export default function ConcUi() {
 
     useEffect(() => {
 
-        console.log('ori', ori);
+        //console.log('ori', ori);
     }, [ori]);
 
 
@@ -103,24 +104,46 @@ export default function ConcUi() {
                     <Link isExternal href="/docs/conc">{t("conc:Need more")}?</Link>
                 </div>
                 {/* TODO:重置按钮 */}
-                <span className="w-full text-lg font-bold my-2">{t("conc:Original")}</span>
-                <div className="flex flex-col  gap-3">
-
-                    <ConcItem title={t("conc:Volume")+" 1"} default_unit={'mL'} value={ori} type='vol' handleChange={handleOri} handleSelect={handleOriUnit} />
-                    <ConcItem title={t("conc:Mass")+" 1"}  default_unit={'g'} value={ori} type='mass' handleChange={handleOri} handleSelect={handleOriUnit} />
-                    <ConcItem title={t("conc:Density")+" 1"}  default_unit={'gpermL'} value={ori} type='density' handleChange={handleOri} handleSelect={handleOriUnit} />
-                    <ConcItem title={t("conc:Amount of Substance")+" 1"} default_unit={'mole'} value={ori} type='amount' handleChange={handleOri} handleSelect={handleOriUnit} />
-                    <ConcItem title={t("conc:Molecular Weight")+" 1"} default_unit={'gpermole'} value={ori} type='mw' handleChange={handleOri} handleSelect={handleOriUnit} />
-                    <ConcItem title={t("conc:Mass Concentration")+" 1"} default_unit={'gperL'} value={ori} type='massconc' handleChange={handleOri} handleSelect={handleOriUnit} />
-                    <ConcItem title={t("conc:Molarity")+" 1"}  default_unit={'mM'} value={ori} type='mol' handleChange={handleOri} handleSelect={handleOriUnit} />
+                <div className='flex flex-row my-3'>
+                    <span className="w-full text-lg font-bold my-2">{t("conc:Original")}</span>
+                    <Button color='danger' className='mr-3' onClick={() => {
+                        setOriStock((draft) => {
+                            Object.keys(draft).forEach(key => { draft[key] = 0.0; });
+                        });
+                        setOri((draft) => {
+                            Object.keys(draft).forEach(key => { draft[key] = ''; });
+                        });
+                    }}>Clear</Button>
                 </div>
-                <span className="w-full text-lg font-bold my-2">{t('conc:Diluted')}</span>
+
                 <div className="flex flex-col  gap-3">
-                    <ConcItem title={t("conc:Volume")+" 2"}  default_unit={'mL'} value={dil} type='vol' handleChange={handleDil} handleSelect={handleDilUnit} />
-                    <ConcItem title={t("conc:Mass")+" 2"} default_unit={'g'} value={dil} type='mass' handleChange={handleDil} handleSelect={handleDilUnit} />
-                    <ConcItem title={t("conc:Density")+" 2"} default_unit={'gpermL'} value={dil} type='density' handleChange={handleDil} handleSelect={handleDilUnit} />
-                    <ConcItem title={t("conc:Mass Concentration")+" 2"}default_unit={'gperL'} value={dil} type='massconc' handleChange={handleDil} handleSelect={handleDilUnit} />
-                    <ConcItem title={t("conc:Molarity")+" 2"}  default_unit={'mM'} value={dil} type='mol' handleChange={handleDil} handleSelect={handleDilUnit} />
+                    {/* TODO:只有当液体时才会有密度和两个体积选项（溶液和溶质） */}
+                    <ConcItem title={t("conc:Volume") + " 1"} default_unit={'mL'} value={ori} type='vol' handleChange={handleOri} handleSelect={handleOriUnit} />
+                    <ConcItem title={t("conc:Mass") + " 1"} default_unit={'g'} value={ori} type='mass' handleChange={handleOri} handleSelect={handleOriUnit} />
+                    <ConcItem title={t("conc:Density") + " 1"} default_unit={'gpermL'} value={ori} type='density' handleChange={handleOri} handleSelect={handleOriUnit} />
+                    <ConcItem title={t("conc:Amount of Substance") + " 1"} default_unit={'mole'} value={ori} type='amount' handleChange={handleOri} handleSelect={handleOriUnit} />
+                    <ConcItem title={t("conc:Molecular Weight") + " 1"} default_unit={'gpermole'} value={ori} type='mw' handleChange={handleOri} handleSelect={handleOriUnit} />
+                    <ConcItem title={t("conc:Mass Concentration") + " 1"} default_unit={'gperL'} value={ori} type='massconc' handleChange={handleOri} handleSelect={handleOriUnit} />
+                    <ConcItem title={t("conc:Molarity") + " 1"} default_unit={'mM'} value={ori} type='mol' handleChange={handleOri} handleSelect={handleOriUnit} />
+                </div>
+                <div className='flex flex-row my-3'>
+                    <span className="w-full text-lg font-bold my-2">{t('conc:Diluted')}</span>
+                    <Button color='danger' className='mr-3' onClick={() => {
+                        setDilStock((draft) => {
+                            Object.keys(draft).forEach(key => { draft[key] = 0.0; });
+                        });
+                        setDil((draft) => {
+                            Object.keys(draft).forEach(key => { draft[key] = ''; });
+                        });
+                    }}>Clear</Button>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                    <ConcItem title={t("conc:Volume") + " 2"} default_unit={'mL'} value={dil} type='vol' handleChange={handleDil} handleSelect={handleDilUnit} />
+                    <ConcItem title={t("conc:Mass") + " 2"} default_unit={'g'} value={dil} type='mass' handleChange={handleDil} handleSelect={handleDilUnit} />
+                    <ConcItem title={t("conc:Density") + " 2"} default_unit={'gpermL'} value={dil} type='density' handleChange={handleDil} handleSelect={handleDilUnit} />
+                    <ConcItem title={t("conc:Mass Concentration") + " 2"} default_unit={'gperL'} value={dil} type='massconc' handleChange={handleDil} handleSelect={handleDilUnit} />
+                    <ConcItem title={t("conc:Molarity") + " 2"} default_unit={'mM'} value={dil} type='mol' handleChange={handleDil} handleSelect={handleDilUnit} />
 
                 </div>
             </div>

@@ -168,7 +168,7 @@ export default function OligoUI() {
             </div>
 
             <ResultCardGroup>
-                <ResultCard title={t("oligo:Complement")+" 3' → 5'"} result={complement} type='text' />
+                <ResultCard title={t("oligo:Complement")+" 5' → 3'"} result={complement} type='text' />
                 <ResultCard title={t("oligo:Parameters")} result={
                     {
                         columns: [

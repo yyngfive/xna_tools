@@ -330,6 +330,8 @@ export function sequence_value(sequence, type, conc) {
         ext: 0,
         weight: 0,
         gc: 0,
+        od260:0,
+        od260ng:0,
     };
 
     const MW = {
@@ -446,7 +448,8 @@ export function sequence_value(sequence, type, conc) {
 
     oligo_value.tm = tm_value(sequence_cleaned, conc, type);
 
-    return (sequence_cleaned != '' ? oligo_value : { tm: 0, weight: 0, ext: 0, gc: 0 });
+    return (sequence_cleaned != '' ? oligo_value : { tm: 0, weight: 0, ext: 0, gc: 0 ,od260:0,
+        od260ng:0,});
 }
 
 const test_seq = 'ACG TGA TCG ATC TCG ATT T';

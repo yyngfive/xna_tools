@@ -35,8 +35,6 @@ export default function ConcUi() {
         setOri((draft) => {
             draft[type] = value.toString();
         });
-
-
     };
     const handleDil = (value, type) => {
         const stock = n_by_unit(type, dilUnit[type]) * Number(value);
@@ -84,7 +82,6 @@ export default function ConcUi() {
     };
 
     useEffect(() => {
-
         console.log('ori', ori);
     }, [ori]);
 

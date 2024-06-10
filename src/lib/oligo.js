@@ -1,3 +1,4 @@
+import {add,chain,format} from "mathjs"
 
 function sequence_clean(sequence) {
     return (sequence.replace(/[\t\r\f\n\s]*/g, ''));
@@ -386,36 +387,46 @@ function tm_allawi(seq,conc) {
         pairs.push(pair);
     }
     let deltaH = 0
-    let deltaS = 0
+    let deltaS = chain(0)
+    let deltaG = chain(0)
     //计算累计
     if(d_seq[0] === 'A' || d_seq[0] === 'T'){
-        deltaH += init_at.H;
-        deltaS += init_at.S;
+        deltaH = chain(deltaH).add(init_at.H);
+        deltaS = deltaS.add(init_at.S);
+        deltaG = deltaG.add(init_at.G);
     }else{
-        deltaH += init_gc.H;
-        deltaS += init_gc.S;
+        deltaH = chain(deltaH).add(init_gc.H);
+        deltaS = deltaS.add(init_gc.S);
+        deltaG = deltaG.add(init_gc.G);
     }
     if(d_seq[seq_len-1] === 'A' || d_seq[seq_len-1] === 'T'){
-        deltaH += init_at.H;
-        deltaS += init_at.S;
+        deltaH = chain(deltaH).add(init_at.H);
+        deltaS = deltaS.add(init_at.S);
+        deltaG = deltaG.add(init_at.G);
     }else{
-        deltaH += init_gc.H;
-        deltaS += init_gc.S;
+        deltaH = chain(deltaH).add(init_gc.H);
+        deltaS = deltaS.add(init_gc.S);
+        deltaG = deltaG.add(init_gc.G);
     }
     
     pairs.forEach(e => {
-        deltaS += NNparam[e].S;
         deltaH += NNparam[e].H;
+        deltaS = deltaS.add(NNparam[e].S);
+        deltaG = deltaG.add(NNparam[e].G);
     });
 
     //考虑自我互补
     if (self_comp) {
         deltaH += symmetry.H;
-        deltaS += symmetry.S;
+        deltaS = deltaS.add(symmetry.S);
+        deltaG = deltaG.add(symmetry.G);
         x = 1;
     } else {
         x = 4;
     }
+    deltaS = deltaS.done()
+    deltaG = deltaG.done()
+    console.log('deltaH and S and G',deltaH,deltaS,deltaG,1000*(deltaH - deltaG)/310.15)
     //统一浓度单位为M
     const conc_oligo = conc.oligo / (1000 * 1000);
     const conc_na = conc.na / 1000;

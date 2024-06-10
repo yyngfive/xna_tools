@@ -84,7 +84,7 @@ function modification_verify(modi_base) {
 
 }
 
-function sequence_get(parsed) {
+export function sequence_get(parsed) {
     let seq = '';
     console.log(parsed);
     parsed.forEach(item => {
@@ -118,7 +118,7 @@ export function sequence_length(sequence_parsed) {
 
 }
 
-function tm_value(seq, conc, type) {
+function tm_john(seq, conc) {
     //37摄氏度
     const NNparam = {
         AA: {
@@ -203,19 +203,11 @@ function tm_value(seq, conc, type) {
         },
 
     };
-
-    const initiation = {
-        H: 0.2,
-        S: -5.7,
-        G: 1.96,
-    };
-
     const symmetry = {
         H: 0,
         S: -1.4,
         G: 0.43,
     };
-
     const tAT = {
         H: 2.2,
         S: 6.9,
@@ -223,8 +215,222 @@ function tm_value(seq, conc, type) {
     };
 
     const R = 1.9872;
-    const { An, Cn, Tn, Gn, Un,In } = base_count(seq);
+
+    //BUG 只考虑DNA的情况，只考虑ACTG碱基
     const seq_len = seq.length;
+    let d_seq = seq.replaceAll('U', 'T').replaceAll('I', 'G');
+
+    const pairs = [];
+    let self_comp = sequence_complement(d_seq) === d_seq ? true : false;
+    let x;
+    console.log(self_comp);
+
+    //计算NN配对
+    for (let i = 0; i < seq_len - 1; i += 1) {
+        const pair = d_seq.slice(i, i + 2);
+        pairs.push(pair);
+    }
+
+    //计算累计
+    let deltaH = initiation.H;
+    let deltaS = initiation.S;
+    pairs.forEach(e => {
+        deltaS += NNparam[e].S;
+        deltaH += NNparam[e].H;
+    });
+    //考虑末端AT配对
+    if (d_seq[seq_len - 1] == 'A' || d_seq[seq_len - 1] == 'T') {
+        deltaH += tAT.H;
+        deltaS += tAT.S;
+    }
+    if (d_seq[0] == 'A' || d_seq[0] == 'T') {
+        deltaH += tAT.H;
+        deltaS += tAT.S;
+    }
+    //考虑自我互补
+    if (self_comp) {
+        deltaH += symmetry.H;
+        deltaS += symmetry.S;
+        x = 1;
+    } else {
+        x = 4;
+    }
+    //统一浓度单位为M
+    const conc_oligo = conc.oligo / (1000 * 1000);
+    const conc_na = conc.na / 1000;
+    //1M Na离子下的Tm
+    const tm0 = deltaH * 1000 / (deltaS + R * Math.log(conc_oligo * 2 / x)) - 273.15;
+    //钠离子矫正，仅适合小于16nt的链，且Na离子浓度大于50mM，小于1.1M
+    const deltaS_na = deltaS + 0.368 * (seq_len - 1) * Math.log(conc_na / 1000);
+    const tm_na = deltaH * 1000 / (deltaS_na + R * Math.log(conc_oligo * 2 / x)) - 273.15;
+    return { tm: tm0, tm_na: tm_na };
+}
+
+function tm_allawi(seq,conc) {
+    const NNparam = {
+        AA: {
+            H: -7.9,
+            G: -1.00,
+            S: -22.2,
+        },
+        AT: {
+            H: -7.2,
+            G: -0.88,
+            S: -20.4,
+        },
+        AC: {
+            H: -8.4,
+            G: -1.44,
+            S: -22.4,
+        },
+        AG: {
+            H: -7.8,
+            G: -1.28,
+            S: -21.0,
+        },
+        TA: {
+            H: -7.2,
+            G: -0.58,
+            S: -21.3,
+        },
+        TT: {
+            H: -7.9,
+            G: -1.00,
+            S: -22.2,
+        },
+        TC: {
+            H: -8.2,
+            G: -1.30,
+            S: -22.2,
+        },
+        TG: {
+            H: -8.5,
+            G: -1.45,
+            S: -22.7,
+        },
+        CA: {
+            H: -8.5,
+            G: -1.45,
+            S: -22.7,
+        },
+        CT: {
+            H: -7.8,
+            G: -1.28,
+            S: -21.0,
+        },
+        CC: {
+            H: -8.0,
+            G: -1.84,
+            S: -19.9,
+        },
+        CG: {
+            H: -10.6,
+            G: -2.17,
+            S: -27.2,
+        },
+        GA: {
+            H: -8.2,
+            G: -1.30,
+            S: -22.2,
+        },
+        GT: {
+            H: -8.4,
+            G: -1.44,
+            S: -22.4,
+        },
+        GC: {
+            H: -9.8,
+            G: -2.24,
+            S: -24.4,
+        },
+        GG: {
+            H: -8.0,
+            G: -1.84,
+            S: -19.9,
+        },
+
+    };
+    const init_gc = {
+        H: 0.1,
+        S: -2.8,
+        G: 0.98,
+    };
+
+    const init_at = {
+        H: 2.3,
+        S: 4.1,
+        G: 1.03
+    };
+
+    const symmetry = {
+        H: 0,
+        S: -1.4,
+        G: 0.4,
+    };
+
+    const R = 1.987;
+
+    //BUG 只考虑DNA的情况，只考虑ACTG碱基
+    const seq_len = seq.length;
+    let d_seq = seq.replaceAll('U', 'T').replaceAll('I', 'G');
+    const { An, Cn, Tn, Gn } = base_count(d_seq);
+
+    const pairs = [];
+    let self_comp = sequence_complement(d_seq) === d_seq ? true : false;
+    let x;
+    //console.log(self_comp);
+
+    //计算NN配对
+    for (let i = 0; i < seq_len - 1; i += 1) {
+        const pair = d_seq.slice(i, i + 2);
+        pairs.push(pair);
+    }
+    let deltaH = 0
+    let deltaS = 0
+    //计算累计
+    if(d_seq[0] === 'A' || d_seq[0] === 'T'){
+        deltaH += init_at.H;
+        deltaS += init_at.S;
+    }else{
+        deltaH += init_gc.H;
+        deltaS += init_gc.S;
+    }
+    if(d_seq[seq_len-1] === 'A' || d_seq[seq_len-1] === 'T'){
+        deltaH += init_at.H;
+        deltaS += init_at.S;
+    }else{
+        deltaH += init_gc.H;
+        deltaS += init_gc.S;
+    }
+    
+    pairs.forEach(e => {
+        deltaS += NNparam[e].S;
+        deltaH += NNparam[e].H;
+    });
+
+    //考虑自我互补
+    if (self_comp) {
+        deltaH += symmetry.H;
+        deltaS += symmetry.S;
+        x = 1;
+    } else {
+        x = 4;
+    }
+    //统一浓度单位为M
+    const conc_oligo = conc.oligo / (1000 * 1000);
+    const conc_na = conc.na / 1000;
+    //1M Na离子下的Tm
+    const tm0 = deltaH * 1000 / (deltaS + R * Math.log(conc_oligo * 2 / x)) - 273.15;
+
+
+    const f_gc = (Cn + Gn) / seq_len;
+    const tm_na = 1 / (1/tm0 + [(4.29 * f_gc -3.95) * Math.log(conc.na / 1000) + 0.940 * Math.log(conc.na / 1000) * Math.log(conc.na / 1000)] / 100000)
+    return tm0
+}
+
+function tm_value(seq, conc, type) {
+
+
     if (conc.idk) {
         let tm = 0;
         //TODO 考虑离子浓度的情况
@@ -236,47 +442,19 @@ function tm_value(seq, conc, type) {
         }
         return (tm.toFixed(1));
     } else {
-        //BUG:对U和I碱基的临时处理
-        let d_seq = seq.replaceAll('U','T').replaceAll('I','G')
-        const pairs = [];
-        let self_comp = false;
-        let x;
 
-        for (let i = 0; i < seq_len - 1; i += 1) {
-            const pair = d_seq.slice(i, i + 2);
-            pairs.push(pair);
-        }
-        let deltaH = initiation.H;
-        let deltaS = initiation.S;
-        pairs.forEach(e => {
-            deltaS += NNparam[e].S;
-            deltaH += NNparam[e].H;
-        });
-        if (d_seq[seq_len - 1] == 'A' || d_seq[seq_len - 1] == 'T') {
-            deltaH += tAT.H;
-            deltaS += tAT.S;
-        }
-        if (self_comp) {
-            deltaH += symmetry.H;
-            deltaS += symmetry.S;
-            x = 1;
-        } else {
-            x = 4;
-        }
-        const tm0 = deltaH * 1000 / (deltaS + R * Math.log(conc.oligo * 2 / (1000 * 1000 * x))) - 273.15;
-        const f_gc = (Cn + Gn) / seq_len
-        //const tm_na = 1 / (1/tm0 + [(4.29 * f_gc -3.95) * Math.log(conc.na / 1000) + 0.940 * Math.log(conc.na / 1000) * Math.log(conc.na / 1000)] / 100000)
-        //TODO：不同盐离子算法
-        const deltaS_na = deltaS + 0.368 * (seq_len - 1) * Math.log(conc.na / 1000)
-        const tm_na = deltaH * 1000 / (deltaS_na + R * Math.log(conc.oligo * 2 / (1000 * 1000 * x))) - 273.15;
-        return tm_na > 0 ? tm_na.toFixed(1) : '-';
+
+        let tm = tm_allawi(seq,conc)
+
+        return tm > 0 ? tm.toFixed(1) : '-';
 
     }
 
 }
 
-export function sequence_complement(sequence_parsed) {
-    let seq = sequence_get(sequence_parsed);
+export function sequence_complement(sequence) {
+    
+    let seq = sequence;
     //TODO 考虑RNA修饰
     let res = seq.replace(/[ACGTUI]/g, (match) => {
         switch (match) {
@@ -300,7 +478,7 @@ export function sequence_complement(sequence_parsed) {
     return (complement);
 }
 
-function seq_gc(seq){
+function seq_gc(seq) {
 
 }
 
@@ -330,8 +508,8 @@ export function sequence_value(sequence, type, conc) {
         ext: 0,
         weight: 0,
         gc: 0,
-        od260:0,
-        od260ng:0,
+        od260: 0,
+        od260ng: 0,
     };
 
     const MW = {
@@ -418,15 +596,15 @@ export function sequence_value(sequence, type, conc) {
             //console.log(e,typeof Ext_DNA[e])
             ext += Ext_DNA[e];
         });
-        
+
         ext = ext - (Ai * Ext_DNA.A + Ci * Ext_DNA.C + Ti * Ext_DNA.T + Gi * Ext_DNA.G);
         oligo_value.weight = weight.toFixed(1);
-       
-        oligo_value.ext = Object.is(ext,NaN) ? '-' : ext;
-        console.log('ext_oligo',oligo_value.ext);
+
+        oligo_value.ext = Object.is(ext, NaN) ? '-' : ext;
+        console.log('ext_oligo', oligo_value.ext);
         const gc = (100 * (Cn + Gn) / sequence_cleaned.length).toFixed(1);
         //console.log(gc);
-        oligo_value.gc = Object.is(gc,NaN) ? '-' : gc;
+        oligo_value.gc = Object.is(gc, NaN) ? '-' : gc;
 
     } else if (type === 'RNA') {
         const { An, Cn, Gn, Un } = base_count(sequence_cleaned);
@@ -439,19 +617,21 @@ export function sequence_value(sequence, type, conc) {
             ext += Ext_RNA[e];
         });
         ext = ext - (Ai * Ext_RNA.A + Ci * Ext_RNA.C + Ui * Ext_RNA.U + Gi * Ext_RNA.G);
-        oligo_value.ext = Object.is(ext,NaN) ? '-' : ext;
+        oligo_value.ext = Object.is(ext, NaN) ? '-' : ext;
         const gc = (100 * (Cn + Gn) / sequence_cleaned.length).toFixed(1);
 
-        oligo_value.gc = Object.is(gc,NaN) ? 0 : gc;
+        oligo_value.gc = Object.is(gc, NaN) ? 0 : gc;
 
     }
 
     oligo_value.tm = tm_value(sequence_cleaned, conc, type);
 
-    return (sequence_cleaned != '' ? oligo_value : { tm: 0, weight: 0, ext: 0, gc: 0 ,od260:0,
-        od260ng:0,});
+    return (sequence_cleaned != '' ? oligo_value : {
+        tm: 0, weight: 0, ext: 0, gc: 0, od260: 0,
+        od260ng: 0,
+    });
 }
 
 const test_seq = 'ACG TGA TCG ATC TCG ATT T';
 const seq_parsed = sequence_parse(test_seq);
-console.log(sequence_verify(test_seq, 'DNA'), sequence_value(seq_parsed, 'DNA', { idk: false, oligo: 0.25,na:50 }));
+console.log(sequence_verify(test_seq, 'DNA'), sequence_value(seq_parsed, 'DNA', { idk: false, oligo: 0.25, na: 50 }));

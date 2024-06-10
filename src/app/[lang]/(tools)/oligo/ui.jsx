@@ -5,7 +5,7 @@ import { Button } from "@nextui-org/button";
 import { Select, SelectItem } from "@nextui-org/select";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/dropdown";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { sequence_verify, sequence_length, sequence_complement, sequence_value, sequence_parse } from "@/lib/oligo";
+import { sequence_verify, sequence_length, sequence_complement, sequence_value, sequence_parse,sequence_get } from "@/lib/oligo";
 import { ResultCard, ResultCardGroup } from "@/components/ResultCard";
 import { Modal, ModalContent, useDisclosure } from "@nextui-org/modal";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
@@ -73,7 +73,7 @@ export default function OligoUI() {
         if (verified) {
             //console.log('parsed', parsed);
             setBaseCount(sequence_length(parsed));
-            setComplement(sequence_complement(parsed));
+            setComplement(sequence_complement(sequence_get(parsed)));
             setOligoValue(sequence_value(parsed, seqType, conc));
         } else {
             setBaseCount(0);
@@ -189,7 +189,7 @@ export default function OligoUI() {
                             { key: '2', name: t('oligo:GC Content'), value: oligoValue.gc + ' %' },
                             { key: '3', name: t('oligo:Tm Value'), value: oligoValue.tm + ' ℃' },
                             { key: '4', name: t('oligo:Extinction Coefficient'), value: oligoValue.ext + ' L/(mole·cm)' },
-                            { key: '5', name: 'μM·cm/OD260', value: oligoValue.ext == 0 ? '0' : Number(((1 / oligoValue.ext) * 1000000).toFixed(1)) },
+                            { key: '5', name: 'μM·cm/OD260', value: oligoValue.ext == 0 ? '0' : Number(((1 / oligoValue.ext) * 1000000).toFixed(2)) },
                             { key: '6', name: 'ng·cm/(μL·OD260)', value: oligoValue.ext == 0 ? '0' : Number(((oligoValue.weight / oligoValue.ext) * 1000).toFixed(2)) },
                         ]
                     }

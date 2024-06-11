@@ -1,4 +1,15 @@
-import {add,chain,format} from "mathjs"
+import { create, all,format } from "mathjs"
+const config = {
+    epsilon: 1e-12,
+    matrix: 'Matrix',
+    number: 'BigNumber',
+    precision: 64,
+    predictable: false,
+    randomSeed: null
+}
+const math = create(all, config)
+const mformat = math.format
+const chain = math.chain
 
 function sequence_clean(sequence) {
     return (sequence.replace(/[\t\r\f\n\s]*/g, ''));
@@ -369,7 +380,7 @@ function tm_allawi(seq,conc) {
         G: 0.4,
     };
 
-    const R = 1.987;
+    const R = math.bignumber(1.987);
 
     //BUG 只考虑DNA的情况，只考虑ACTG碱基
     const seq_len = seq.length;
@@ -386,57 +397,75 @@ function tm_allawi(seq,conc) {
         const pair = d_seq.slice(i, i + 2);
         pairs.push(pair);
     }
-    let deltaH = 0
-    let deltaS = chain(0)
-    let deltaG = chain(0)
+    let deltaH = chain(math.bignumber(0))
+    let deltaS = chain(math.bignumber(0))
+    let deltaG = chain(math.bignumber(0))
     //计算累计
     if(d_seq[0] === 'A' || d_seq[0] === 'T'){
-        deltaH = chain(deltaH).add(init_at.H);
+        deltaH = deltaH.add(init_at.H);
         deltaS = deltaS.add(init_at.S);
         deltaG = deltaG.add(init_at.G);
     }else{
-        deltaH = chain(deltaH).add(init_gc.H);
+        deltaH = deltaH.add(init_gc.H);
         deltaS = deltaS.add(init_gc.S);
         deltaG = deltaG.add(init_gc.G);
     }
     if(d_seq[seq_len-1] === 'A' || d_seq[seq_len-1] === 'T'){
-        deltaH = chain(deltaH).add(init_at.H);
+        deltaH = deltaH.add(init_at.H);
         deltaS = deltaS.add(init_at.S);
         deltaG = deltaG.add(init_at.G);
     }else{
-        deltaH = chain(deltaH).add(init_gc.H);
+        deltaH = deltaH.add(init_gc.H);
         deltaS = deltaS.add(init_gc.S);
         deltaG = deltaG.add(init_gc.G);
     }
     
     pairs.forEach(e => {
-        deltaH += NNparam[e].H;
-        deltaS = deltaS.add(NNparam[e].S);
+        deltaH = deltaH.add(NNparam[e].H);
+        deltaS = deltaS.add(math.bignumber(NNparam[e].S));
         deltaG = deltaG.add(NNparam[e].G);
     });
 
     //考虑自我互补
     if (self_comp) {
-        deltaH += symmetry.H;
+        deltaH = deltaH.add(symmetry.H);
         deltaS = deltaS.add(symmetry.S);
         deltaG = deltaG.add(symmetry.G);
         x = 1;
     } else {
         x = 4;
     }
-    deltaS = deltaS.done()
-    deltaG = deltaG.done()
-    console.log('deltaH and S and G',deltaH,deltaS,deltaG,1000*(deltaH - deltaG)/310.15)
+     
+    console.log('deltaH and S and G',deltaH.toString(),deltaS.toString(),deltaG.toString())
     //统一浓度单位为M
-    const conc_oligo = conc.oligo / (1000 * 1000);
-    const conc_na = conc.na / 1000;
+    const conc_oligo = chain(math.bignumber(conc.oligo)).divide(math.bignumber(1000 * 1000));
+    const conc_na = chain(math.bignumber(conc.na)).divide(math.bignumber(1000));
+    console.log(conc.mg)
+    const conc_mg = conc.mg / 1000
+
     //1M Na离子下的Tm
-    const tm0 = deltaH * 1000 / (deltaS + R * Math.log(conc_oligo * 2 / x)) - 273.15;
+    const tm0 = deltaH.multiply(math.bignumber(1000)).divide(deltaS.add(conc_oligo.multiply(2).divide(x).log().multiply(R).done()).done()).add(math.bignumber(-273.15))
+    console.log(tm0.format(3))
 
-
+    //Na离子矫正
     const f_gc = (Cn + Gn) / seq_len;
-    const tm_na = 1 / (1/tm0 + [(4.29 * f_gc -3.95) * Math.log(conc.na / 1000) + 0.940 * Math.log(conc.na / 1000) * Math.log(conc.na / 1000)] / 100000)
-    return tm0
+    const na_const = ((4.29 * f_gc - 3.95) * Math.log(conc_na) + 0.940 * Math.log(conc_na) * Math.log(conc_na)) / 100000
+    console.log(na_const,tm0);
+    const tm_na = 1/(1/(tm0.add(273.15)) + na_const)-273.15
+    console.log(tm_na);
+
+    let tm = tm_na
+
+    //Mg离子矫正
+    let r = Math.sqrt(conc_mg) / conc_na
+    if(r < 0.22){
+        tm = tm_na
+    }else if(r < 0.6){
+
+    }else{
+        
+    }
+    return math.format(tm,3)
 }
 
 function tm_value(seq, conc, type) {
@@ -457,7 +486,7 @@ function tm_value(seq, conc, type) {
 
         let tm = tm_allawi(seq,conc)
 
-        return tm > 0 ? tm.toFixed(1) : '-';
+        return Number(tm) > 0 ? tm : '-';
 
     }
 

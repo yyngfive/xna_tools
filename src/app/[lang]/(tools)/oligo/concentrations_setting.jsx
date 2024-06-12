@@ -143,7 +143,20 @@ export default function ConcSetting({ setConc, onClose, conc }) {
                             control={control}
                             defaultValue={conc.dntps}
 
-                            rules={{ required: !conc.idk, validate: (value, formValues) => conc_validate(value, 0, 1000) }}
+                            rules={{
+                                required: !conc.idk,
+                                validate: (value, formValues) => {
+                                    
+                                    const dntps = Number(value);
+                                    //console.log(formValues)
+                                    if (dntps <= formValues.mg * 1.2 || conc.idk) {
+                                        return true;
+                                    } 
+                                     else {
+                                        return false;
+                                    }
+                                }
+                            }}
                             render={({ field }) => (
                                 <Input
                                     {...field}
@@ -153,7 +166,7 @@ export default function ConcSetting({ setConc, onClose, conc }) {
                                     endContent=' mM' placeholder="Default: 0" size='sm'
 
                                     isInvalid={errors.dntps}
-                                    errorMessage={errors.dntps && 'Range: 0 - 1000 mM'} />
+                                    errorMessage={errors.dntps && 'Range: 0 - 120%[Mg++]'} />
                             )}
                         />
                         <Controller

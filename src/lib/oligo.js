@@ -441,7 +441,8 @@ function tm_allawi(seq,conc) {
     const conc_oligo = chain(math.bignumber(conc.oligo)).divide(math.bignumber(1000 * 1000));
     const conc_na = chain(math.bignumber(conc.na)).divide(math.bignumber(1000));
     console.log(conc.mg)
-    const conc_mg = conc.mg / 1000
+    let conc_mg = conc.mg / 1000
+    const conc_dntps = conc.dntps / 1000
 
     //1M Na离子下的Tm
     const tm0 = deltaH.multiply(math.bignumber(1000)).divide(deltaS.add(conc_oligo.multiply(2).divide(x).log().multiply(R).done()).done()).add(math.bignumber(-273.15))
@@ -456,33 +457,44 @@ function tm_allawi(seq,conc) {
 
     let tm = tm_na
 
+    //dNTP矫正
+    if(conc_dntps != 0){
+        const K_a = 30000
+        const D = Math.pow((K_a * conc_dntps - K_a * conc_mg + 1),2) + 4 * K_a * conc_mg
+        conc_mg = (-(K_a * conc_dntps - K_a * conc_mg + 1) + Math.sqrt(D)) / (2 * K_a)
+    }
+
     //Mg离子矫正
     let r = Math.sqrt(conc_mg) / conc_na
     if(r < 0.22){
         tm = tm_na
     }else if(r < 0.6){
-
+        const a = 3.92 * (0.843 - 0.352 * Math.sqrt(conc_na) * Math.log(conc_na))
+        const d = 1.42 * (1.279 - 4.03 * Math.log(conc_na) / 1000 - 8.03 * Math.log(conc_na)* Math.log(conc_na) / 1000)
+        const g = 8.31 * (0.486 - 0.258 * Math.log(conc_na) + 5.25 * Math.pow(Math.log(conc_na),3) / 1000)
+        const tm_mg = 1/(1/tm0.add(273.15) + (a - 0.911 * Math.log(conc_mg) + f_gc * (6.26 + d * Math.log(conc_mg)) + (-48.2 + 52.5 * Math.log(conc_mg) + g * Math.log(conc_mg) * Math.log(conc_mg)) / (2 * (seq_len - 1))) / 100000) - 273.15
+        tm = tm_mg
     }else{
-        
+        const tm_mg = 1/(1/tm0.add(273.15) + (3.92 - 0.911 * Math.log(conc_mg) + f_gc * (6.26 + 1.42 * Math.log(conc_mg)) + (-48.2 + 52.5 * Math.log(conc_mg) + 8.31 * Math.log(conc_mg) * Math.log(conc_mg)) / (2 * (seq_len - 1))) / 100000) - 273.15
+        tm = tm_mg
     }
     return math.format(tm,3)
 }
 
 function tm_value(seq, conc, type) {
-
+    const seq_len = seq.length;
+    let d_seq = seq.replaceAll('U', 'T').replaceAll('I', 'G');
+    const { An, Cn, Tn, Gn } = base_count(d_seq);
 
     if (conc.idk) {
         let tm = 0;
-        //TODO 考虑离子浓度的情况
         if (seq_len <= 13) {
-            //BUG 暂时没有考虑含有U的DNA或类似情况
-            tm = (An + Tn + Un) * 2 + (Gn + Cn) * 4;
+            tm = (An + Tn) * 2 + (Gn + Cn) * 4;
         } else {
             tm = 64.9 + 41 * (Gn + Cn - 16.4) / seq_len;
         }
         return (tm.toFixed(1));
     } else {
-
 
         let tm = tm_allawi(seq,conc)
 

@@ -95,7 +95,7 @@ export default function OligoUI() {
             <div className="flex justify-start gap-3 mt-6">
                 {/* TODO：改成dropdown */}
                 <Select
-
+                    isDisabled
                     size="sm"
                     label={t('oligo:set-as')}
                     aria-label="type"
@@ -127,9 +127,10 @@ export default function OligoUI() {
                 </Select>
                 {/* TODO: 自动插入修饰：5‘：插入开头，3’：插入结尾，中间：插入光标后*/}
 
-                <Dropdown >
+                <Dropdown>
                     <DropdownTrigger>
                         <Button
+                            isDisabled
                             size="sm" className="w-20" color="primary" endContent={<ChevronDownIcon />}
                         >
                             {t('oligo:mod')} </Button>

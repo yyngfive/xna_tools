@@ -6,5 +6,7 @@
   "source": "Source",
   "blog": "Blog",
   "feedback": "Feedback",
-  "Alert":"This tool is still under development!!!"
+  "Alert":"This tool is still under development!!!",
+  "copy":"Copy",
+  "copied":"Copied"
 }

@@ -1,7 +1,7 @@
 "use client";
 import useTranslation from "next-translate/useTranslation";
 import { Select, SelectSection, SelectItem } from "@nextui-org/select";
-import { n_by_unit } from "@/lib/conc";
+import { n_by_unit,calcConc } from "@/lib/conc";
 import { Input } from "@nextui-org/input";
 import { cm } from "./common_molecule";
 import { Link } from "@nextui-org/link";
@@ -67,33 +67,61 @@ export default function ConcUi() {
   });
 
   const handleOri = (value, type) => {
-    console.log("ori" , value);
+    //console.log("ori" , value);
     let stock = Big(0)
     let show = value
     if (value.toString() !== "") {
-      stock = Big(value).times(n_by_unit(type, oriUnit[type])).toString();
+      stock = Big(value).times(n_by_unit(type, oriUnit[type]));
     }
     //console.log(stock);
+    let oriUpdated = {...oriStock}
+    oriUpdated[type] = stock
+    const {newOri,newDil} = calcConc(oriUpdated,dilStock)
 
-    setOriStock((draft) => {
-      draft[type] = stock;
-    });
+    setOriStock(newOri);
+    setDilStock(newDil);
+    console.log(newOri);
+    Object.keys(ori).forEach(key=>{
+      setOri((draft) => {
+        draft[key] =  newOri[key].div(n_by_unit(key, oriUnit[key])).toString();
+      });
+    })
+    Object.keys(dil).forEach(key=>{
+      setDil((draft) => {
+        draft[key] =  newDil[key].div(n_by_unit(key, dilUnit[key])).toString();
+      });
+    })
     setOri((draft) => {
       draft[type] = show.toString();
     });
+    
   };
   const handleDil = (value, type) => {
     let stock = Big(0)
     let show = value
     if (value.toString() !== "") {
-      stock = Big(value).times(n_by_unit(type, dilUnit[type])).toString();
+      stock = Big(value).times(n_by_unit(type, dilUnit[type]));
      
     }
     //console.log(stock);
 
-    setDilStock((draft) => {
-      draft[type] = stock;
-    });
+    let dilUpdated = {...oriStock}
+    dilUpdated[type] = stock
+    const {newOri,newDil} = calcConc(oriStock,dilUpdated)
+
+    setOriStock(newOri);
+    setDilStock(newDil);
+    console.log(newDil);
+    Object.keys(ori).forEach(key=>{
+      setOri((draft) => {
+        draft[key] =  newOri[key].div(n_by_unit(key, oriUnit[key])).toString();
+      });
+    })
+    Object.keys(dil).forEach(key=>{
+      setDil((draft) => {
+        draft[key] =  newDil[key].div(n_by_unit(key, dilUnit[key])).toString();
+      });
+    })
     setDil((draft) => {
       draft[type] = show.toString();
     });
@@ -102,7 +130,7 @@ export default function ConcUi() {
   // 修改数值：根据新的单位计算其他数据值
   // 计算时考虑单位
   const handleOriUnit = (value, type) => {
-    console.log('unit', value);
+    //console.log('unit', value);
     let unit = Array.from(value)[0]
 
     
@@ -111,7 +139,7 @@ export default function ConcUi() {
     });
 
     setOri((draft) => {
-      draft[type] = Big(oriStock[type]).div(n_by_unit(type, unit)).toString();
+      draft[type] = oriStock[type].div(n_by_unit(type, unit)).toString();
     });
   };
   const handleDilUnit = (value, type) => {
@@ -122,13 +150,17 @@ export default function ConcUi() {
     });
 
     setDil((draft) => {
-      draft[type] = Big(dilStock[type]).div(n_by_unit(type, unit)).toString();
+      draft[type] = dilStock[type].div(n_by_unit(type, unit)).toString();
     });
   };
 
-//   useEffect(() => {
-//     console.log("ori", ori);
-//   }, [ori]);
+  useEffect(() => {
+    // console.log('ori,dil',oriStock,dilStock);
+    // const {newOri,newDil} = calcConc(oriStock,dilStock)
+    // console.log('new',newOri,newDil);
+    // setOriStock(newOri)
+    
+  }, [oriStock,dilStock]);
 
   //toast.warn(t("common:Alert"));
   const alertText = t("common:Alert");

@@ -15,7 +15,7 @@ export const analyzer_config = [
     {
         name: 'ConcHelper',
         desc: 'coming soon',
-        href: '/conc',
+        href: 'https://www.omnicalculator.com/chemistry/concentration',
         doc: '/docs/conc'
     },
 ];
@@ -24,7 +24,7 @@ export const visualizer_config = [
     {
         name: 'CleanSeq',
         desc:'',
-        href:'https://www.omnicalculator.com/chemistry/concentration',
+        href:'/clean',
         doc:'/docs/clean'
     },
     {

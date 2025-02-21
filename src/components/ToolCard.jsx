@@ -12,7 +12,12 @@ export function ToolCard({ tool_info }) {
     return (
         <>
             <Card className="h-60 w-60 " isPressable shadow="sm" onPress={() => {
-                window.open('/'+lang+href, '_blank');
+                if(href.slice(0,1) === '/'){
+                    window.open('/'+lang+href, '_blank');
+                }else{
+                    window.open(href, '_blank');
+                }
+                
             }}>
 
                 <CardHeader>

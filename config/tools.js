@@ -24,9 +24,15 @@ export const visualizer_config = [
     {
         name: 'CleanSeq',
         desc:'',
-        href:'/clean',
+        href:'https://www.omnicalculator.com/chemistry/concentration',
         doc:'/docs/clean'
-    }
+    },
+    {
+        name: 'Plate Mapper',
+        desc:'96, 384, 1536 well plate mapper',
+        href:'https://demo.thunor.net/platemap',
+        doc:'https://docs.thunor.net/plate-mapper'
+    },
 ];
 
 export const database_config = [

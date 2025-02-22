@@ -81,7 +81,7 @@ function Menu({ type, current }) {
             >
                 <Listbox>
                     {analyzer_config.map((item, index) => (
-                        <ListboxItem key={index} href={type === 'docs' ? '/' + lang + item.doc : '/' + lang + item.href}>
+                        <ListboxItem key={index} href={type === 'docs' ? (item.href.slice(0) === '/' ? '/' + lang + item.doc : item.doc) : (item.href.slice(0) === '/' ? '/' + lang + item.href : item.href)}>
                             <span className='font-bold'>{item.name}</span>
                         </ListboxItem>
                     ))}
@@ -97,7 +97,7 @@ function Menu({ type, current }) {
             >
                 <Listbox>
                     {visualizer_config.map((item, index) => (
-                        <ListboxItem key={index} href={type === 'docs' ? '/' + lang + item.doc : '/' + lang + item.href}>
+                        <ListboxItem key={index} href={type === 'docs' ? (item.href.slice(0) === '/' ? '/' + lang + item.doc : item.doc) : (item.href.slice(0) === '/' ? '/' + lang + item.href : item.href)}>
                             <span className='font-bold'>{item.name}</span>
                         </ListboxItem>
                     ))}
@@ -111,7 +111,7 @@ function Menu({ type, current }) {
                 title={<h3 className='font-bold text-lg text-success-600' >Database</h3>}>
                 <Listbox>
                     {database_config.map((item, index) => (
-                        <ListboxItem key={index} href={type === 'docs' ? '/' + lang + item.doc : '/' + lang + item.href}>
+                        <ListboxItem key={index} href={type === 'docs' ? (item.href.slice(0) === '/' ? '/' + lang + item.doc : item.doc) : (item.href.slice(0) === '/' ? '/' + lang + item.href : item.href)}>
                             <span className='font-bold'>{item.name}</span>
                         </ListboxItem>
                     ))}

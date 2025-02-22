@@ -113,7 +113,7 @@ export default function OligoUI() {
                         >
                             {t('oligo:mod')} </Button>
                     </DropdownTrigger>
-                    <DropdownMenu aria-label="modifications" items={valid_modi}>
+                    <DropdownMenu aria-label="modifications" items={[]}>
                         {(item) => (
                             <DropdownItem
                                 key={"modi" + item.key}

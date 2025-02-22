@@ -43,7 +43,7 @@ export function ToolCard({ tool_info }) {
 export function ToolCardGroup({ children }) {
 
     return (
-        <div className='flex flex-wrap justify-stretch gap-4 m-2 '>
+        <div className='flex flex-wrap gap-4 m-2 '>
             {children}
         </div>
     );

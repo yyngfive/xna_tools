@@ -9,7 +9,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
-  title: "XNA Tools",
+  title: "PAN Tools",
   description: "An integrated platform for nucleic acid-related tools",
 };
 
